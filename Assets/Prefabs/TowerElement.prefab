@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8772602653018799811}
   - component: {fileID: 2991917384649149101}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: TowerElement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

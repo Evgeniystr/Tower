@@ -12,15 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94aee6f63d2b9e4c873e3e43be0f133, type: 3}
   m_Name: MyGameSettings
   m_EditorClassIdentifier: 
-  towerElementPrefab: {fileID: 2425516868240158934, guid: 179975ab8870e1541876e189b1722bd3,
-    type: 3}
+  heightElementRatio: 1
   heightStep: 0.1
   sturtupPoolSize: 20
   poolExpandStep: 5
   scaleUpSpeed: 0.5
-  cameraFolowSpeed: 0.5
-  cameraFailSpeed: 0.5
-  cameraBaseFailDistance: 2
-  cameraCoffFailDistance: 1
   vaweScaleSpeed: 3
   vaweDelayStep: 0.2

@@ -13,6 +13,7 @@ public class TowerBuilder : MonoBehaviour
     [SerializeField] GameSettings settings;
     [SerializeField] Material loseElementMaterial;
     [SerializeField] Transform baseEement;
+    [SerializeField] Material[] fruitMaterials;
 
     bool isBuilderInputEnabled = true;
     const float YgrownStep = 0.25f;
@@ -20,13 +21,15 @@ public class TowerBuilder : MonoBehaviour
     PoolItem previousTowerElement;
 
 
+    private void Start()
+    {
+        if (baseEement)
+            baseEement.GetComponent<MeshRenderer>().material = GetRandomeMaterial();
+    }
+
     private void Update()
     {
         BuildInputHandler();
-    }
-
-    private void FixedUpdate()
-    {
         ScaleHandler();
     }
 
@@ -52,7 +55,7 @@ public class TowerBuilder : MonoBehaviour
         }
     }
 
-
+    
     void ScaleHandler()
     {
         if (currentTowerElement != null)
@@ -74,15 +77,35 @@ public class TowerBuilder : MonoBehaviour
     void SetCurrentElement()
     {
         //set scale
-        currentTowerElement.obj.transform.localScale = new Vector3(0, settings.heightStep, 0);
+        //currentTowerElement.obj.transform.localScale = new Vector3(0, settings.heightStep, 0);
+        currentTowerElement.obj.transform.localScale = new Vector3(0, currentTowerElement.obj.transform.localScale.y, 0);
 
         //set position
-        var baseY = baseEement? baseEement.position.y + baseEement.localScale.y - settings.heightStep : 0;
+        //var baseY = baseEement? baseEement.position.y + baseEement.localScale.y - settings.heightStep : 0;
+        float baseY;
 
-        float newYpos = settings.heightStep * (TowerPoolManager.Instance.desiredItemIndex + 1) * 2 + baseY;
+        if (previousTowerElement != null)
+            baseY = previousTowerElement.obj.transform.position.y;
+        else if (baseEement)
+            baseY = baseEement.position.y;
+        else
+            baseY = 0;
+
+        //float newYpos = settings.heightStep * (TowerPoolManager.Instance.desiredItemIndex + 1) * 2 + baseY;
+        //currentTowerElement.obj.transform.position = new Vector3(0, newYpos, 0);
+        float newYpos = currentTowerElement.obj.GetComponent<Renderer>().bounds.size.y + baseY;
         currentTowerElement.obj.transform.position = new Vector3(0, newYpos, 0);
 
+        //set material
+        currentTowerElement.obj.GetComponent<MeshRenderer>().material = GetRandomeMaterial();
+
         currentTowerElement.obj.SetActive(true);
+    }
+
+    Material GetRandomeMaterial()
+    {
+        int ind = Random.Range(1, fruitMaterials.Length) - 1;
+        return fruitMaterials[ind];
     }
 
     void OnRelease()

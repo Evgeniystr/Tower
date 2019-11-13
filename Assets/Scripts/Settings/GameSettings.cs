@@ -3,6 +3,7 @@
 [CreateAssetMenu(fileName = "NewGameSettings", menuName = "GameSettings/Gameplay")]
 public class GameSettings : ScriptableObject
 {
+    public float heightElementRatio;
     public float heightStep;
     public int sturtupPoolSize;
     public int poolExpandStep;
