@@ -211,7 +211,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -350,55 +350,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &267648877
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 267648879}
-  - component: {fileID: 267648878}
-  m_Layer: 0
-  m_Name: TowerPoolManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &267648878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 267648877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d877b6f3149a0454883acbb6ac52aef6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  towerElementPrefab: {fileID: -927199367670048503, guid: 1fb4cba95aae4984684784b6e8ccb5b4,
-    type: 3}
-  startPoolsize: 15
-  poolExpandStep: 5
-  commonElementMaterial: {fileID: 2100000, guid: 267e44b195810bb419d8565fcd8ff650,
-    type: 2}
---- !u!4 &267648879
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 267648877}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.000000059604645, y: 0, z: -0.00000011920929}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &280846965
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,6 +360,7 @@ GameObject:
   m_Component:
   - component: {fileID: 280846967}
   - component: {fileID: 280846966}
+  - component: {fileID: 280846968}
   m_Layer: 0
   m_Name: TowerBuilder
   m_TagString: Untagged
@@ -428,6 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 307cd2131b54be84b9f4b4e870605c2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pool: {fileID: 280846968}
   settings: {fileID: 11400000, guid: 608627e463785a74da9fa0fc968f7429, type: 2}
   loseElementMaterial: {fileID: 2100000, guid: 011774ced9a550649af66084a569304a, type: 2}
   baseEement: {fileID: 1345347638}
@@ -452,8 +405,24 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &280846968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 280846965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd01e5301e2eda7439473c4583d14377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolItemtPrefab: {fileID: -927199367670048503, guid: 1fb4cba95aae4984684784b6e8ccb5b4,
+    type: 3}
+  startPoolsize: 15
+  poolExpandStep: 5
 --- !u!1 &612463076
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,6 +433,7 @@ GameObject:
   m_Component:
   - component: {fileID: 612463078}
   - component: {fileID: 612463077}
+  - component: {fileID: 612463079}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -528,6 +498,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 20, y: 194, z: 0}
+--- !u!114 &612463079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612463076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d44e2870511ba94cbf9654fac4b979b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: ef9e47a8be29afb45aa262a606b478b4, type: 2}
+  startLoockAt: {fileID: 1460487175}
 --- !u!1 &903061811
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,51 +726,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7105815422515577219}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1538321854
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1538321856}
-  - component: {fileID: 1538321855}
-  m_Layer: 0
-  m_Name: CameraControler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1538321855
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1538321854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d44e2870511ba94cbf9654fac4b979b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  settings: {fileID: 11400000, guid: ef9e47a8be29afb45aa262a606b478b4, type: 2}
-  startLoockAt: {fileID: 1460487175}
---- !u!4 &1538321856
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1538321854}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.5828903, y: 1.8065171, z: 4.569978}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1789613163
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,7 +895,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1965964223
 GameObject:
@@ -1022,7 +961,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &7105815422515577219
 PrefabInstance:

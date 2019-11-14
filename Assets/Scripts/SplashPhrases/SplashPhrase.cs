@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SplashPhraseItem : MonoBehaviour, IsplashItem
+public class SplashPhrase : MonoBehaviour, Isplash
 {
     Animation splashAnimation;
     Image background;
@@ -39,5 +39,4 @@ public class SplashPhraseItem : MonoBehaviour, IsplashItem
             gameObject.SetActive(false);
         }
     }
-
 }

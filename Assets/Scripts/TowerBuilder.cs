@@ -10,6 +10,7 @@ enum LoseCheckType
 
 public class TowerBuilder : MonoBehaviour
 {
+    [SerializeField] Pool pool;
     [SerializeField] GameSettings settings;
     [SerializeField] Material loseElementMaterial;
     [SerializeField] Transform baseEement;
@@ -17,8 +18,8 @@ public class TowerBuilder : MonoBehaviour
 
     bool isBuilderInputEnabled = true;
     const float YgrownStep = 0.25f;
-    PoolItem currentTowerElement;
-    PoolItem previousTowerElement;
+    IpoolItem currentTowerElement;
+    IpoolItem previousTowerElement;
 
 
     private void Start()
@@ -69,19 +70,16 @@ public class TowerBuilder : MonoBehaviour
 
     void OnTap()
     {
-        currentTowerElement = TowerPoolManager.Instance.GetNewTowerElement();
+        currentTowerElement = pool.GetNewPoolItem();
         SetCurrentElement();
         CameraControler.Instance.SetLookAt(currentTowerElement.obj);
     }
 
     void SetCurrentElement()
     {
-        //set scale
-        //currentTowerElement.obj.transform.localScale = new Vector3(0, settings.heightStep, 0);
         currentTowerElement.obj.transform.localScale = new Vector3(0, currentTowerElement.obj.transform.localScale.y, 0);
 
         //set position
-        //var baseY = baseEement? baseEement.position.y + baseEement.localScale.y - settings.heightStep : 0;
         float baseY;
 
         if (previousTowerElement != null)
@@ -91,8 +89,6 @@ public class TowerBuilder : MonoBehaviour
         else
             baseY = 0;
 
-        //float newYpos = settings.heightStep * (TowerPoolManager.Instance.desiredItemIndex + 1) * 2 + baseY;
-        //currentTowerElement.obj.transform.position = new Vector3(0, newYpos, 0);
         float newYpos = currentTowerElement.obj.GetComponent<Renderer>().bounds.size.y + baseY;
         currentTowerElement.obj.transform.position = new Vector3(0, newYpos, 0);
 
@@ -116,7 +112,7 @@ public class TowerBuilder : MonoBehaviour
 
             previousTowerElement = currentTowerElement;
             currentTowerElement = null;
-            TowerPoolManager.Instance.GoOnPoolExpandCheck();
+            pool.ExpandNeedCheck();
         }
         else
             Lose();
@@ -148,15 +144,20 @@ public class TowerBuilder : MonoBehaviour
             PerfectMovePerform();
     }
 
+    TowerPoolItem Adapt(IpoolItem item)
+    {
+        return item as TowerPoolItem;
+    }
+
     void PerfectMovePerform()
     {
-        currentTowerElement.isPerfect = true;
+        Adapt(currentTowerElement).isPerfect = true;
 
-        var poolCount = TowerPoolManager.Instance.towerElementsPool.Count;
+        var poolCount = pool.GetPoolSize();
         int delayCount = 0;
-        for (int i = poolCount - 1; i >= 0; i--)
+        for (int i = poolCount - 1; i >= 0; i--)//reverse cycle
         {
-            var poolItem = TowerPoolManager.Instance.towerElementsPool[i];
+            var poolItem = pool.GetItemByIndex(i); ;
 
             if (!poolItem.obj.activeSelf)
                 continue;
@@ -185,7 +186,7 @@ public class TowerBuilder : MonoBehaviour
                                         poolItem.obj.transform.localScale.y,
                                         poolItem.obj.transform.localScale.z + 0.3f);
 
-                if (poolItem.isPerfect)
+                if (Adapt(poolItem).isPerfect)
                 {
                     newFinalScale = poolItem.obj.transform.localScale;
                 }
@@ -197,14 +198,13 @@ public class TowerBuilder : MonoBehaviour
                 }
             }
 
-            poolItem.maxScaleTo = newMaxScale;
-            poolItem.finalScaleTo = newFinalScale;
+            Adapt(poolItem).SetWaveScales(newMaxScale, newFinalScale);
 
-            StartCoroutine(Wave(poolItem, delay));
+            StartCoroutine(Wave(Adapt(poolItem), delay));
         }                                                                             
     }
 
-    IEnumerator Wave(PoolItem poolItem, float delay)
+    IEnumerator Wave(TowerPoolItem poolItem, float delay)
     {
         yield return new WaitForSeconds(delay);
 
@@ -289,7 +289,7 @@ public class TowerBuilder : MonoBehaviour
     void Restart()
     {
         GameManager.Instance.readyToRestart = false;
-        TowerPoolManager.Instance.ResetPoolOff();
+        pool.ResetPool();
         CameraControler.Instance.RestartCamera();
         isBuilderInputEnabled = true;
         previousTowerElement = null;

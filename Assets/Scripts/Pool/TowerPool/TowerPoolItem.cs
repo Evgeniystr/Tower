@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 
-public class PoolItem
+public class TowerPoolItem : IpoolItem
 {
-    public PoolItem(GameObject towerElementObj)
-    {
-        obj = towerElementObj;
-    }
+    public GameObject obj { get; private set; }
 
-    public GameObject obj;
     public bool isPerfect;
     public Vector3 maxScaleTo;
     public Vector3 finalScaleTo;
+
+
+    public TowerPoolItem(GameObject go)
+    {
+        obj = go;
+    }
+
 
     public void SetWaveScales(Vector3 maxScaleTo, Vector3 finalScaleTo)
     {
