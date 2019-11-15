@@ -12,6 +12,7 @@ public class TowerBuilder : MonoBehaviour
 {
     [SerializeField] Pool pool;
     [SerializeField] GameSettings settings;
+    [SerializeField] SplashHandler splashHandler;
     [SerializeField] Material loseElementMaterial;
     [SerializeField] Transform baseEement;
     [SerializeField] Material[] fruitMaterials;
@@ -70,7 +71,7 @@ public class TowerBuilder : MonoBehaviour
 
     void OnTap()
     {
-        currentTowerElement = pool.GetNewPoolItem();
+        currentTowerElement = pool.GetNextPoolItem();
         SetCurrentElement();
         CameraControler.Instance.SetLookAt(currentTowerElement.obj);
     }
@@ -141,7 +142,12 @@ public class TowerBuilder : MonoBehaviour
         var minPerfScale = previousTowerElement.obj.transform.localScale * 0.95f;
 
         if (currentTowerElement.obj.transform.localScale.x >= minPerfScale.x && currentTowerElement.obj.transform.localScale.z >= minPerfScale.z)
+        {
             PerfectMovePerform();
+
+            if (splashHandler)
+                splashHandler.DoSplash();
+        }
     }
 
     TowerPoolItem Adapt(IpoolItem item)
@@ -153,7 +159,7 @@ public class TowerBuilder : MonoBehaviour
     {
         Adapt(currentTowerElement).isPerfect = true;
 
-        var poolCount = pool.GetPoolSize();
+        var poolCount = pool.GetActiveElementsCount();
         int delayCount = 0;
         for (int i = poolCount - 1; i >= 0; i--)//reverse cycle
         {
@@ -170,6 +176,7 @@ public class TowerBuilder : MonoBehaviour
 
             //just placed item
             if (i == poolCount - 1)
+
             {
                 newMaxScale = new Vector3(poolItem.obj.transform.localScale.x + 0.4f,
                                             poolItem.obj.transform.localScale.y,
@@ -178,8 +185,8 @@ public class TowerBuilder : MonoBehaviour
                 newFinalScale = new Vector3(newMaxScale.x - 0.2f,
                                                 poolItem.obj.transform.localScale.y,
                                                 newMaxScale.z - 0.2f);
-
             }
+            //other items
             else
             {
                 newMaxScale = new Vector3(poolItem.obj.transform.localScale.x + 0.3f,
@@ -198,10 +205,22 @@ public class TowerBuilder : MonoBehaviour
                 }
             }
 
-            Adapt(poolItem).SetWaveScales(newMaxScale, newFinalScale);
+            Adapt(poolItem).SetWaveScales(ClampScales(newMaxScale), 
+                                          ClampScales(newFinalScale));
 
             StartCoroutine(Wave(Adapt(poolItem), delay));
         }                                                                             
+    }
+
+    Vector3 ClampScales(Vector3 scales)
+    {
+        if(scales.x > settings.maxScale || scales.y > settings.maxScale)
+        {
+            return new Vector3(Mathf.Min(scales.x, settings.maxScale),
+                               Mathf.Min(scales.y, settings.maxScale),
+                               0);
+        }
+        return scales;
     }
 
     IEnumerator Wave(TowerPoolItem poolItem, float delay)
