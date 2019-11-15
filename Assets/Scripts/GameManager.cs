@@ -17,5 +17,11 @@ public class GameManager : MonoBehaviour
         }
         else
             Destroy(gameObject);
+
+        //Set screen size for Standalone
+        #if UNITY_STANDALONE
+                Screen.SetResolution(540, 910, false);
+                Screen.fullScreen = false;
+        #endif
     }
 }
