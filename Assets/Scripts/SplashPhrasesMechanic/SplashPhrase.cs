@@ -26,12 +26,16 @@ public class SplashPhrase : MonoBehaviour
     }
 
 
-    public void SetAndPlay(AnimationClip animation, Sprite splashBackground, string text)
+    public void SetAndPlay(AnimationClip animation, Sprite splashBackground, string text, ColorPair colors)
     {
         StartupSet();
 
         background.sprite = splashBackground;
+        background.color = colors.bgColor;
+
         textMesh.text = text;
+        textMesh.color = colors.textColor;
+
         animationComponent.clip = animation;
 
         gameObject.SetActive(true);

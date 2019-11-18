@@ -6,6 +6,7 @@ public class SplashHandler : MonoBehaviour
     [SerializeField] Pool pool;
     [SerializeField] AnimationClip[] animations;
     [SerializeField] Sprite[] backgrounds;
+    [SerializeField] SplashColorPalette splashColorPalette;
 
     string[] phrases;
     RectTransform[] splashPlace;
@@ -13,7 +14,7 @@ public class SplashHandler : MonoBehaviour
 
     private void Start()
     {
-        phrases = new string[] { "Yummie", "Splash",};
+        phrases = new string[] { "Yummie", "Splash", "Mmmm", "Yaay!", "Juice!", "Sabroso", "Om nom nom"};
         splashPlace = GetComponentsInChildren<RectTransform>();
     }
 
@@ -23,27 +24,32 @@ public class SplashHandler : MonoBehaviour
         var poolItem = pool.GetFirstAvaliableItem();
         var splashPhrase = poolItem.obj.GetComponent<SplashPhrase>();
 
-        //get sprite
+        //set background sprite
         int index;
 
         index = UnityEngine.Random.Range(0, backgrounds.Length - 1);
         var sprite = backgrounds[index];
 
-        //get text
+        //set text
         index = UnityEngine.Random.Range(0, phrases.Length - 1);
         var text = phrases[index];
 
-        //get animation
+        //set animation
         index = UnityEngine.Random.Range(0, animations.Length - 1);
         var animation = animations[index];
 
+        //set color
+        index = UnityEngine.Random.Range(0, splashColorPalette.ColorPalette.Length - 1);
+        var colors = splashColorPalette.ColorPalette[index];
+
         SetPositionAndRotation(poolItem.obj);
 
-        splashPhrase.SetAndPlay(animation, sprite, text);
+        splashPhrase.SetAndPlay(animation, sprite, text, colors);
     }
 
     void SetPositionAndRotation(GameObject go)
     {
+        //position------
         var desiredPlace = splashPlace[UnityEngine.Random.Range(1, splashPlace.Length - 1)];//skip 0 parent index
         Vector2 offset = GetSplashOffsets(go);
 
@@ -55,11 +61,21 @@ public class SplashHandler : MonoBehaviour
                                  0);
 
         go.transform.SetParent(desiredPlace);
-        go.transform.localPosition = newPos;
 
         //warning message
         if (xPosRange < 0 || yPosRange < 0)
             Debug.LogError("Splash size bigger than parent rectancle");
+
+        //rotation------
+        var euler = UnityEngine.Random.Range(-40, 40);
+        //Quaternion newRot = Quaternion.Euler(0, 0, euler);
+        var x = new Vector3(0, 0, euler);
+
+
+
+
+        go.transform.localPosition = newPos;
+        go.transform.localEulerAngles = x;
     }
 
     Vector2 GetSplashOffsets(GameObject go)
