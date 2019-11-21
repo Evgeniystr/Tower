@@ -7,7 +7,6 @@ public class SplashPhrase : MonoBehaviour
 {
     Animation animationComponent;
     Image background;
-    //TextMesh textMesh;
     TextMeshProUGUI textMesh;
 
     bool isNeedBeSetted = true;

@@ -15,4 +15,4 @@ MonoBehaviour:
   cameraFolowSpeed: 0.5
   cameraFailSpeed: 0.5
   cameraBaseFailDistance: 0.8
-  cameraCoffFailDistance: 0.05
+  cameraCoffFailDistance: 0.3

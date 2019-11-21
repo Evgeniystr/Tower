@@ -13,12 +13,13 @@ public class TowerBuilder : MonoBehaviour
     [SerializeField] Pool pool;
     [SerializeField] GameSettings settings;
     [SerializeField] SplashHandler splashHandler;
+    [SerializeField] ScoreHandler scoreHandler;
     [SerializeField] Material loseElementMaterial;
     [SerializeField] Transform baseEement;
     [SerializeField] Material[] fruitMaterials;
 
+
     bool isBuilderInputEnabled = true;
-    const float YgrownStep = 0.25f;
     IpoolItem currentTowerElement;
     IpoolItem previousTowerElement;
 
@@ -27,6 +28,9 @@ public class TowerBuilder : MonoBehaviour
     {
         if (baseEement)
             baseEement.GetComponent<MeshRenderer>().material = GetRandomeMaterial();
+
+        //start score resrt
+        scoreHandler.Reset();
     }
 
     private void Update()
@@ -109,7 +113,14 @@ public class TowerBuilder : MonoBehaviour
     {
         if(LoseCheck(LoseCheckType.MoveEnd))
         {
-            PerfectMoveCheck();
+            if (PerfectMoveCheck())
+            {
+                OnPerfectMove();
+            }
+            else
+            {
+                OnNormalMove();
+            }
 
             previousTowerElement = currentTowerElement;
             currentTowerElement = null;
@@ -132,38 +143,62 @@ public class TowerBuilder : MonoBehaviour
         currentTowerElement.obj.transform.localScale = newScale;
     }
 
+    void OnNormalMove()
+    {
+        if (scoreHandler)
+            scoreHandler.AddNormalScore();
 
-    //perfect move 
-    void PerfectMoveCheck()
+    }
+
+    void OnPerfectMove()
+    {
+        PerfectMovePerform();
+
+        if (splashHandler)
+            splashHandler.DoSplash();
+
+        if (scoreHandler)
+            scoreHandler.AddPerfectScore();
+    }
+
+
+    bool PerfectMoveCheck()
     {
         if (previousTowerElement == null)
-            return;
+            return false;
 
         var minPerfScale = previousTowerElement.obj.transform.localScale * 0.95f;
 
         if (currentTowerElement.obj.transform.localScale.x >= minPerfScale.x && currentTowerElement.obj.transform.localScale.z >= minPerfScale.z)
         {
-            PerfectMovePerform();
-
-            if (splashHandler)
-                splashHandler.DoSplash();
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
-    TowerPoolItem Adapt(IpoolItem item)
+    TowerPoolItem CastToTowerPoolItem(IpoolItem item)
     {
         return item as TowerPoolItem;
     }
 
     void PerfectMovePerform()
     {
-        Adapt(currentTowerElement).isPerfect = true;
+        CastToTowerPoolItem(currentTowerElement).isPerfect = true;
 
         var poolCount = pool.GetActiveElementsCount();
         int delayCount = 0;
+
+        IpoolItem poolItem;
+        TowerPoolItem PoolItemUpcasted;
+
         for (int i = poolCount - 1; i >= 0; i--)//reverse cycle
         {
-            var poolItem = pool.GetItemByIndex(i); ;
+            poolItem = pool.GetItemByIndex(i);
+            PoolItemUpcasted = CastToTowerPoolItem(poolItem);
+
 
             if (!poolItem.obj.activeSelf)
                 continue;
@@ -193,7 +228,7 @@ public class TowerBuilder : MonoBehaviour
                                         poolItem.obj.transform.localScale.y,
                                         poolItem.obj.transform.localScale.z + 0.3f);
 
-                if (Adapt(poolItem).isPerfect)
+                if (PoolItemUpcasted.isPerfect)
                 {
                     newFinalScale = poolItem.obj.transform.localScale;
                 }
@@ -205,20 +240,21 @@ public class TowerBuilder : MonoBehaviour
                 }
             }
 
-            Adapt(poolItem).SetWaveScales(ClampScales(newMaxScale), 
-                                          ClampScales(newFinalScale));
 
-            StartCoroutine(Wave(Adapt(poolItem), delay));
+            PoolItemUpcasted.SetWaveScales(ClampScales(newMaxScale), 
+                                           ClampScales(newFinalScale));
+
+            StartCoroutine(Wave(PoolItemUpcasted, delay));
         }                                                                             
     }
 
     Vector3 ClampScales(Vector3 scales)
     {
-        if(scales.x > settings.maxScale || scales.y > settings.maxScale)
+        if (scales.x > settings.maxScale || scales.y > settings.maxScale)
         {
             return new Vector3(Mathf.Min(scales.x, settings.maxScale),
                                Mathf.Min(scales.y, settings.maxScale),
-                               0);
+                               scales.z);
         }
         return scales;
     }
@@ -292,6 +328,9 @@ public class TowerBuilder : MonoBehaviour
         var failedElement = currentTowerElement;
         currentTowerElement = null;
 
+
+        loseElementMaterial.SetTexture("_MainTex",
+            failedElement.obj.GetComponent<MeshRenderer>().material.mainTexture);
         failedElement.obj.GetComponent<MeshRenderer>().material = loseElementMaterial;
 
         StartCoroutine(DestroyLoseElement(failedElement.obj));
@@ -312,6 +351,8 @@ public class TowerBuilder : MonoBehaviour
         CameraControler.Instance.RestartCamera();
         isBuilderInputEnabled = true;
         previousTowerElement = null;
+
+        scoreHandler.Reset();
     }
 
 }

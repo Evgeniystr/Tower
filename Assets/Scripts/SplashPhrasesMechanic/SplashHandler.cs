@@ -14,7 +14,7 @@ public class SplashHandler : MonoBehaviour
 
     private void Start()
     {
-        phrases = new string[] { "Yummie", "Splash", "Mmmm", "Yaay!", "Juice!", "Sabroso", "Om nom nom"};
+        phrases = new string[] { "Yummie", "Splash", "Mmmm", "Yaay!", "Juice!", "Sabroso", "Om nom nom", "Oh Lord!", "Perfect!", "So GOOD!!", "Nice!"};
         splashPlace = GetComponentsInChildren<RectTransform>();
     }
 
@@ -27,19 +27,19 @@ public class SplashHandler : MonoBehaviour
         //set background sprite
         int index;
 
-        index = UnityEngine.Random.Range(0, backgrounds.Length - 1);
+        index = UnityEngine.Random.Range(0, backgrounds.Length);
         var sprite = backgrounds[index];
 
         //set text
-        index = UnityEngine.Random.Range(0, phrases.Length - 1);
+        index = UnityEngine.Random.Range(0, phrases.Length);
         var text = phrases[index];
 
         //set animation
-        index = UnityEngine.Random.Range(0, animations.Length - 1);
+        index = UnityEngine.Random.Range(0, animations.Length);
         var animation = animations[index];
 
         //set color
-        index = UnityEngine.Random.Range(0, splashColorPalette.ColorPalette.Length - 1);
+        index = UnityEngine.Random.Range(0, splashColorPalette.ColorPalette.Length);
         var colors = splashColorPalette.ColorPalette[index];
 
         SetPositionAndRotation(poolItem.obj);
@@ -50,7 +50,7 @@ public class SplashHandler : MonoBehaviour
     void SetPositionAndRotation(GameObject go)
     {
         //position------
-        var desiredPlace = splashPlace[UnityEngine.Random.Range(1, splashPlace.Length - 1)];//skip 0 parent index
+        var desiredPlace = splashPlace[UnityEngine.Random.Range(1, splashPlace.Length)];//skip 0 parent index
         Vector2 offset = GetSplashOffsets(go);
 
         var xPosRange = desiredPlace.sizeDelta.x - offset.x;
