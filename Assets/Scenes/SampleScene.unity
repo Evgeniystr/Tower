@@ -400,13 +400,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 138651322}
-  m_LocalRotation: {x: -0.1530461, y: 0.1530461, z: 0.6903455, w: 0.6903455}
+  m_LocalRotation: {x: -0.012340879, y: 0.012340879, z: 0.7069991, w: 0.7069991}
   m_LocalPosition: {x: 0.8155571, y: -0.96292496, z: 23.532227}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 600417987}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 335, y: 360, z: 90}
+  m_LocalEulerAnglesHint: {x: 358, y: 360, z: 90}
 --- !u!108 &138651324
 Light:
   m_ObjectHideFlags: 0
@@ -418,7 +418,7 @@ Light:
   serializedVersion: 9
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2.5
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.802082
@@ -929,8 +929,7 @@ MonoBehaviour:
   m_text: 12
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3b137343fd7e1aa4689c8dd7b7203c1f, type: 2}
-  m_sharedMaterial: {fileID: -8881570014257806887, guid: 3b137343fd7e1aa4689c8dd7b7203c1f,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 16ab7d4a7b302e44d987d02b8c10e4b3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1548,7 +1547,7 @@ Light:
   serializedVersion: 9
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 7
+  m_Intensity: 3
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.802082
@@ -1604,13 +1603,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1789613163}
-  m_LocalRotation: {x: 0.6855014, y: 0.69364005, z: -0.17345852, w: 0.13734445}
+  m_LocalRotation: {x: 0.66232735, y: 0.67437977, z: -0.24763392, w: 0.21263106}
   m_LocalPosition: {x: 0.8155571, y: -0.96292496, z: 23.532227}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 600417987}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 25.4, y: 183, z: 90}
+  m_LocalEulerAnglesHint: {x: 38, y: 183, z: 90}
 --- !u!1 &1909402137
 GameObject:
   m_ObjectHideFlags: 0

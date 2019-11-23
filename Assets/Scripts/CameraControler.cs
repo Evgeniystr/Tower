@@ -48,7 +48,7 @@ public class CameraControler : MonoBehaviour
         while(learpTt <= 1)
         {
             yield return Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, position + cameraOffset, learpTt);
-            learpTt += Time.fixedDeltaTime * settings.cameraFolowSpeed;
+            learpTt += Time.deltaTime * settings.cameraFolowSpeed;
         }
 
         yield return null;
@@ -88,7 +88,7 @@ public class CameraControler : MonoBehaviour
             //cam rotate
             Camera.main.transform.LookAt(Vector3.Lerp(camRotateFrom, camRotateTo, learpT));
 
-            learpT += Time.fixedDeltaTime * settings.cameraFailSpeed;
+            learpT += Time.deltaTime * settings.cameraFailSpeed;
         }
 
         GameManager.Instance.readyToRestart = true;

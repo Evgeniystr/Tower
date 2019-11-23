@@ -39,6 +39,11 @@ public class TowerBuilder : MonoBehaviour
         ScaleHandler();
     }
 
+    //private void FixedUpdate()
+    //{
+    //    ScaleHandler();
+    //}
+
 
     void BuildInputHandler()
     {
@@ -133,7 +138,8 @@ public class TowerBuilder : MonoBehaviour
     //scale up
     void ScaleUpCurrentElement()
     {
-        var scaleUpValue = settings.scaleUpSpeed * Time.fixedDeltaTime;
+        //var scaleUpValue = settings.scaleUpSpeed * Time.fixedDeltaTime;
+        var scaleUpValue = settings.scaleUpSpeed * Time.deltaTime;
 
         var newScale = new Vector3(
             currentTowerElement.obj.transform.localScale.x + scaleUpValue,
@@ -270,7 +276,7 @@ public class TowerBuilder : MonoBehaviour
         while (learpT <= 1)
         {
             yield return poolItem.obj.transform.localScale = Vector3.Lerp(from, to, learpT);
-            learpT += Time.fixedDeltaTime * settings.vaweScaleSpeed;
+            learpT += Time.deltaTime * settings.vaweScaleSpeed;
         }
 
 
@@ -281,7 +287,7 @@ public class TowerBuilder : MonoBehaviour
         while (learpT <= 1)
         {
             yield return poolItem.obj.transform.localScale = Vector3.Lerp(from, to, learpT);
-            learpT += Time.fixedDeltaTime * settings.vaweScaleSpeed;
+            learpT += Time.deltaTime * settings.vaweScaleSpeed;
         }
     }
 

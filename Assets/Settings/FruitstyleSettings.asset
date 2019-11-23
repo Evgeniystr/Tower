@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94aee6f63d2b9e4c873e3e43be0f133, type: 3}
   m_Name: FruitstyleSettings
   m_EditorClassIdentifier: 
-  maxScale: 2.3
+  maxScale: 2.2
   scaleUpSpeed: 0.5
   vaweScaleSpeed: 3
   vaweDelayStep: 0.2
