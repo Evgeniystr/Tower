@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b6e744ef1691454fb3cc194e6cdad6c, type: 3}
+  m_Name: FruitstyleSound
+  m_EditorClassIdentifier: 
+  mainTheme: {fileID: 8300000, guid: c7ac52b88c142f8439ebe40942d813ec, type: 3}
+  splatter: {fileID: 8300000, guid: 7611d12eb04a0144eb5e30de035e6ca1, type: 3}
+  splatterMinPitch: 1
+  splatterMaxPitch: 1.3
+  perfectMoveMinPitch: 0.7
+  perfectMoveMaxPitch: 1

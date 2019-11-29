@@ -14,10 +14,12 @@ public class TowerBuilder : MonoBehaviour
     [SerializeField] GameSettings settings;
     [SerializeField] SplashHandler splashHandler;
     [SerializeField] ScoreHandler scoreHandler;
-    [SerializeField] Material loseElementMaterial;
     [SerializeField] Transform baseEement;
+    [SerializeField] SoundSettings soundSettings;
+    [SerializeField] Material loseElementMaterial;
     [SerializeField] Material[] fruitMaterials;
 
+    SoundManager soundManager;
 
     bool isBuilderInputEnabled = true;
     IpoolItem currentTowerElement;
@@ -29,6 +31,8 @@ public class TowerBuilder : MonoBehaviour
         if (baseEement)
             baseEement.GetComponent<MeshRenderer>().material = GetRandomeMaterial();
 
+        soundManager = new SoundManager(gameObject, soundSettings);
+
         //start score resrt
         scoreHandler.Reset();
     }
@@ -38,11 +42,6 @@ public class TowerBuilder : MonoBehaviour
         BuildInputHandler();
         ScaleHandler();
     }
-
-    //private void FixedUpdate()
-    //{
-    //    ScaleHandler();
-    //}
 
 
     void BuildInputHandler()
@@ -154,6 +153,7 @@ public class TowerBuilder : MonoBehaviour
         if (scoreHandler)
             scoreHandler.AddNormalScore();
 
+        soundManager.DoSplatterSound();
     }
 
     void OnPerfectMove()
@@ -165,6 +165,8 @@ public class TowerBuilder : MonoBehaviour
 
         if (scoreHandler)
             scoreHandler.AddPerfectScore();
+
+        soundManager.DoPerfectSplatterSound();
     }
 
 

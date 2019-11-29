@@ -713,8 +713,9 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: 608627e463785a74da9fa0fc968f7429, type: 2}
   splashHandler: {fileID: 13164156}
   scoreHandler: {fileID: 314188740}
-  loseElementMaterial: {fileID: 2100000, guid: 011774ced9a550649af66084a569304a, type: 2}
   baseEement: {fileID: 1345347638}
+  soundSettings: {fileID: 11400000, guid: 67351065c7b570f4189e34e356f5c88f, type: 2}
+  loseElementMaterial: {fileID: 2100000, guid: 011774ced9a550649af66084a569304a, type: 2}
   fruitMaterials:
   - {fileID: 2100000, guid: 3763aa7b696b69846a91c7d99b9bf5e4, type: 2}
   - {fileID: 2100000, guid: 43ffb6b4b4d44634594aa5f1ee1a8c89, type: 2}
