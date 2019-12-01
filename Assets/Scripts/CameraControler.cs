@@ -1,24 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CameraControler : MonoBehaviour
 {
     public static CameraControler Instance;
-
+    
     [SerializeField] CameraSettings settings;
     [SerializeField] Transform startLoockAt;
     Vector3 cameraOffset;
     Quaternion defaultRotation;
 
 
-    void Awake()
+    void Start()
     {
         if (Instance == null)
         {
             Instance = this;
             Instance.cameraOffset = Camera.main.transform.position - startLoockAt.position;
             defaultRotation = Camera.main.transform.rotation;
+
+            GameManager.Instance.RestartEvent += Instance.RestartCamera;
         }
         else
             Destroy(gameObject);
@@ -91,6 +94,7 @@ public class CameraControler : MonoBehaviour
             learpT += Time.deltaTime * settings.cameraFailSpeed;
         }
 
-        GameManager.Instance.readyToRestart = true;
+        //show result pop up
+        GameManager.Instance.GameOverResults();
     }
 }

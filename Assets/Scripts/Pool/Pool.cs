@@ -12,10 +12,11 @@ public abstract class Pool : MonoBehaviour
     int desiredItemIndex;
 
 
-    private void OnEnable()
+    private void Start()
     {
         itemsPool = new List<IpoolItem>();
 
+        GameManager.Instance.RestartEvent += ResetPool;
         PoolExpand(startPoolsize);
     }
 

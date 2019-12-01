@@ -21,7 +21,6 @@ public class TowerBuilder : MonoBehaviour
 
     SoundManager soundManager;
 
-    bool isBuilderInputEnabled = true;
     IpoolItem currentTowerElement;
     IpoolItem previousTowerElement;
 
@@ -32,9 +31,12 @@ public class TowerBuilder : MonoBehaviour
             baseEement.GetComponent<MeshRenderer>().material = GetRandomeMaterial();
 
         soundManager = new SoundManager(gameObject, soundSettings);
-
+        
         //start score resrt
         scoreHandler.Reset();
+
+        //level restart event
+        GameManager.Instance.RestartEvent += Restart;
     }
 
     private void Update()
@@ -46,10 +48,7 @@ public class TowerBuilder : MonoBehaviour
 
     void BuildInputHandler()
     {
-        if(Input.GetMouseButtonDown(0) && GameManager.Instance.readyToRestart)
-            Restart();
-
-        if (isBuilderInputEnabled)
+        if (InputControler.Instance.isInputEnabled)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -332,11 +331,11 @@ public class TowerBuilder : MonoBehaviour
 
     void Lose()
     {
-        isBuilderInputEnabled = false;
+        InputControler.Instance.isInputEnabled = false;
         var failedElement = currentTowerElement;
         currentTowerElement = null;
 
-
+        //change lose material to red
         loseElementMaterial.SetTexture("_MainTex",
             failedElement.obj.GetComponent<MeshRenderer>().material.mainTexture);
         failedElement.obj.GetComponent<MeshRenderer>().material = loseElementMaterial;
@@ -354,13 +353,6 @@ public class TowerBuilder : MonoBehaviour
 
     void Restart()
     {
-        GameManager.Instance.readyToRestart = false;
-        pool.ResetPool();
-        CameraControler.Instance.RestartCamera();
-        isBuilderInputEnabled = true;
         previousTowerElement = null;
-
-        scoreHandler.Reset();
     }
-
 }

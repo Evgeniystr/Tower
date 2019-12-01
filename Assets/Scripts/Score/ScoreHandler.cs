@@ -5,22 +5,26 @@ public class ScoreHandler : MonoBehaviour
 {
     [SerializeField] Animator animator;
     [SerializeField] TextMeshProUGUI textMesh;
-    
-    int currentScore;
-    int hiScore;
 
+    [SerializeField] public int lastScore { private set; get; }
+    [SerializeField] public int hiScore { private set; get; }
+
+    private void Start()
+    {
+        GameManager.Instance.RestartEvent += Reset;
+    }
 
     void UpdateCounters()
     {
-        if (currentScore > hiScore)
-            hiScore = currentScore;
+        if (lastScore > hiScore)
+            hiScore = lastScore;
 
-        textMesh.text = currentScore.ToString();
+        textMesh.text = lastScore.ToString();
     }
 
     public void AddNormalScore()
     {
-        currentScore++;
+        lastScore++;
 
         UpdateCounters();
        
@@ -29,7 +33,7 @@ public class ScoreHandler : MonoBehaviour
 
     public void AddPerfectScore()
     {
-        currentScore++;
+        lastScore++;
 
         UpdateCounters();
 
@@ -38,7 +42,7 @@ public class ScoreHandler : MonoBehaviour
 
     public void Reset()
     {
-        currentScore = 0;
+        lastScore = 0;
         UpdateCounters();
     }
 
