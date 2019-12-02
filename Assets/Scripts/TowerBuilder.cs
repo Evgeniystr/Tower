@@ -116,23 +116,26 @@ public class TowerBuilder : MonoBehaviour
 
     void OnRelease()
     {
-        if(LoseCheck(LoseCheckType.MoveEnd))
+        if(currentTowerElement != null)
         {
-            if (PerfectMoveCheck())
+            if(LoseCheck(LoseCheckType.MoveEnd))
             {
-                OnPerfectMove();
+                if (PerfectMoveCheck())
+                {
+                    OnPerfectMove();
+                }
+                else
+                {
+                    OnNormalMove();
+                }
+
+                previousTowerElement = currentTowerElement;
+                currentTowerElement = null;
+                pool.ExpandNeedCheck();
             }
             else
-            {
-                OnNormalMove();
-            }
-
-            previousTowerElement = currentTowerElement;
-            currentTowerElement = null;
-            pool.ExpandNeedCheck();
+                Lose();
         }
-        else
-            Lose();
     }
 
     //scale up
