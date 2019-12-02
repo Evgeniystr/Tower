@@ -37,32 +37,34 @@ public class TowerBuilder : MonoBehaviour
 
         //level restart event
         GameManager.Instance.RestartEvent += Restart;
+        InputControler.Instance.onTapEvent += OnTap;
+        InputControler.Instance.onReleaseEvent += OnRelease;
     }
 
     private void Update()
     {
-        BuildInputHandler();
+        //BuildInputHandler();
         ScaleHandler();
     }
 
 
-    void BuildInputHandler()
-    {
-        if (InputControler.Instance.isInputEnabled)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    OnTap();
-                }
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                OnRelease();
-            }
-        }
-    }
+    //void BuildInputHandler()
+    //{
+    //    if (InputControler.Instance.isInputEnabled)
+    //    {
+    //        if (Input.GetMouseButtonDown(0))
+    //        {
+    //            if (Input.GetMouseButtonDown(0))
+    //            {
+    //                OnTap();
+    //            }
+    //        }
+    //        else if (Input.GetMouseButtonUp(0))
+    //        {
+    //            OnRelease();
+    //        }
+    //    }
+    //}
 
     
     void ScaleHandler()
