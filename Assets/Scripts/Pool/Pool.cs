@@ -4,7 +4,8 @@ using UnityEngine;
 
 public abstract class Pool : MonoBehaviour
 {
-    [SerializeField] GameObject poolItemtPrefab;
+    [SerializeField] GameObject GOprefab;
+    [SerializeField] IpoolItem poolItemt;//
     [SerializeField] int startPoolsize = 10;
     [SerializeField] int poolExpandStep = 5;
 
@@ -25,7 +26,7 @@ public abstract class Pool : MonoBehaviour
     {
         for (int i = 0; i < quantity; i++)
         {
-            var go = Instantiate(poolItemtPrefab, transform);
+            var go = Instantiate(GOprefab, transform);
             go.SetActive(false);
 
             itemsPool.Add(new TowerPoolItem(go));
@@ -74,7 +75,6 @@ public abstract class Pool : MonoBehaviour
         return null;
     }
 
-    //unused now
     public int GetPoolSize()
     {
         return itemsPool.Count;

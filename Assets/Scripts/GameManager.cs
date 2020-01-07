@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-//Set screen size for Standalone
-#if UNITY_STANDALONE
-                Screen.SetResolution(540, 910, false);
-                Screen.fullScreen = false;
-#endif
-
 
 public class GameManager : MonoBehaviour
 {
@@ -22,12 +16,23 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        ResolutionHelper();
+
         if (Instance == null)
         {
             Instance = this;
         }
         else
             Destroy(gameObject);
+    }
+
+    void ResolutionHelper()
+    {
+#if UNITY_STANDALONE
+        Screen.fullScreen = false;
+        Screen.SetResolution(540, 910, false);
+#endif
+
     }
 
     public void RestartGame()
