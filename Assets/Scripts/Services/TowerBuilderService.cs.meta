@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 307cd2131b54be84b9f4b4e870605c2e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - pool: {instanceID: 0}
+  - settings: {instanceID: 0}
+  - splashHandler: {instanceID: 0}
+  - scoreHandler: {instanceID: 0}
+  - baseEement: {instanceID: 0}
+  - soundSettings: {instanceID: 0}
+  - loseElementMaterial: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
