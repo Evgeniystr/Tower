@@ -13,6 +13,21 @@ public class FruitsPool : APool<GameObject>
 
     protected override GameObject CreateItem()
     {
-        return GameObject.Instantiate(_prefab);
+        var item = GameObject.Instantiate(_prefab);
+        item.SetActive(false);
+        return item;
+    }
+
+    public override GameObject Get()
+    {
+        var item = base.Get();
+        item.SetActive(true);
+        return item;
+    }
+
+    public override void ReleaseItem(GameObject item)
+    {
+        item.SetActive(false);
+        base.ReleaseItem(item);
     }
 }

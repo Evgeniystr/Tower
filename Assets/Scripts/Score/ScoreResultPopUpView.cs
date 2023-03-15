@@ -49,7 +49,7 @@ public class ScoreResultPopUpView : MonoBehaviour
 
     public void Restart()
     {
-        _gameService.RestartGame();
+        _gameService.StartGame();
         _viewport.SetActive(false);
     }
 }

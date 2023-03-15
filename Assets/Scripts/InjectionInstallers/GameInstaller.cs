@@ -29,6 +29,8 @@ public class GameInstaller : MonoInstaller
     private AudioService _audioService;
     [SerializeField]
     private PlayerInputService _playerInputService;
+    [SerializeField]
+    private GameService _gameService;
 
 
     public override void InstallBindings()
@@ -47,10 +49,10 @@ public class GameInstaller : MonoInstaller
 
         Container.Bind<AudioService>().FromInstance(_audioService).AsSingle();
         Container.Bind<PlayerInputService>().FromInstance(_playerInputService).AsSingle();
-        Container.Bind<CameraService>().AsSingle();
-        Container.Bind<GameService>().AsSingle();
+        Container.Bind<GameService>().FromInstance(_gameService).AsSingle();
         Container.Bind<SplashService>().AsSingle();
         Container.Bind<TowerBuilderService>().AsSingle();
+        Container.Bind<CameraService>().AsSingle();
         Container.Bind<ScoreService>().AsSingle();
     }
 }

@@ -5,16 +5,18 @@ using Zenject;
 using DG.Tweening;
 using System.Threading;
 using System;
+using System.Linq;
 
 public class TowerBuilderService
 {
     public event Action<bool> OnTowerItemPlaced;//bool - isPerfect
-    
+
+    public GameObject LastTowerItem => _allTowerElements.Last();
+
     private SplashService _splashService;
     private AudioService _audioService;
     private GameService _gameService;
     private PlayerInputService _playerInputService;
-    private CameraService _cameraService;
     private GameSettings _gameSettings;
     private FruitItemSettings _fruitItemSettings;
     private Transform _towerBaseItem;
@@ -24,7 +26,8 @@ public class TowerBuilderService
     private GameObject _previousTowerElement;
 
     private FruitsPool _fruitsPool;
-    private CancellationTokenSource _scaleUpCancellationTokenSource;
+
+    private bool _isGrowing;
 
     public TowerBuilderService(
         [Inject(Id = Constants.FruitPrefab)] GameObject fruitPrefab,
@@ -33,7 +36,6 @@ public class TowerBuilderService
         AudioService audioService, 
         GameService gameService, 
         PlayerInputService playerInputService,
-        CameraService cameraService,
         FruitItemSettings fruitItemSettings,
         GameSettings gameSettings)
     {
@@ -43,7 +45,6 @@ public class TowerBuilderService
         _audioService = audioService;
         _gameService = gameService;
         _playerInputService = playerInputService;
-        _cameraService = cameraService;
 
         _towerBaseItem = towerBaseItem;
         _fruitItemSettings = fruitItemSettings;
@@ -54,30 +55,45 @@ public class TowerBuilderService
 
     private void Initialize()
     {
-        _scaleUpCancellationTokenSource = new CancellationTokenSource();
+        _allTowerElements = new List<GameObject>();
 
         _towerBaseItem.GetComponent<MeshRenderer>().material = _fruitItemSettings.GetRandomMaterial();
 
-        _gameService.RestartEvent += Restart;
+        _gameService.OngameStart += OnGameStart;
+        _gameService.OnGameOver += OnGameEnd;
+    }
+
+    private void OnGameStart()
+    {
         _playerInputService.OnTapEvent += StartMakeNewFruit;
         _playerInputService.OnReleaseEvent += StopMakeNewFruit;
+
+        foreach (var item in _allTowerElements)
+            _fruitsPool.ReleaseItem(item);
+
+        _previousTowerElement = null;
+    }
+
+    private void OnGameEnd()
+    {
+        _playerInputService.OnTapEvent -= StartMakeNewFruit;
+        _playerInputService.OnReleaseEvent -= StopMakeNewFruit;
     }
 
     private void StartMakeNewFruit()
     {
         SetupCurrentElement();
-        _cameraService.SetLookAt(_currentTowerElement);
 
         ScaleUpProcess();
     }
 
     private async UniTaskVoid ScaleUpProcess()
     {
-        var token = _scaleUpCancellationTokenSource.Token;
+        _isGrowing = true;
 
-        while (!token.IsCancellationRequested)
+        while (_isGrowing)
         {
-            var scaleUpValue = _gameSettings.scaleUpSpeed * Time.deltaTime;
+            var scaleUpValue = _gameSettings.scaleUpSpeed * Time.fixedDeltaTime;
 
             var newScale = new Vector3(
                 _currentTowerElement.transform.localScale.x + scaleUpValue,
@@ -86,9 +102,9 @@ public class TowerBuilderService
 
             _currentTowerElement.transform.localScale = newScale;
 
-            await UniTask.WaitForFixedUpdate(token);
+            await UniTask.WaitForFixedUpdate();
 
-            if (!LoseCheck())
+            if (LoseCheck())
                 Lose();
         }
     }
@@ -100,27 +116,20 @@ public class TowerBuilderService
         _currentTowerElement.transform.localScale = new Vector3(0, _currentTowerElement.transform.localScale.y, 0);
 
         //set position
-        float baseY;
+        float baseYpos = _previousTowerElement == null ?
+            _towerBaseItem.position.y : 
+            _previousTowerElement.transform.position.y;
 
-        if (_previousTowerElement != null)
-            baseY = _previousTowerElement.transform.position.y;
-        else if (_towerBaseItem)
-            baseY = _towerBaseItem.position.y;
-        else
-            baseY = 0;
-
-        float newYpos = _currentTowerElement.GetComponent<Renderer>().bounds.size.y + baseY;
+        float newYpos = _currentTowerElement.GetComponent<Renderer>().bounds.size.y + baseYpos;
         _currentTowerElement.transform.position = new Vector3(0, newYpos, 0);
 
         //set material
         _currentTowerElement.GetComponent<MeshRenderer>().material = _fruitItemSettings.GetRandomMaterial();
-
-        _currentTowerElement.SetActive(true);
     }
 
     void StopMakeNewFruit()
     {
-        _scaleUpCancellationTokenSource.Cancel();
+        _isGrowing = false;
 
         if (PerfectMoveCheck())
             OnPerfectMove();
@@ -128,7 +137,6 @@ public class TowerBuilderService
             OnNormalMove();
 
         _previousTowerElement = _currentTowerElement;
-        _currentTowerElement = null;
     }
 
     void OnNormalMove()
@@ -228,7 +236,8 @@ public class TowerBuilderService
 
     private void Lose()
     {
-        _scaleUpCancellationTokenSource.Cancel();
+        Debug.LogError("Lose");//
+        _isGrowing = false;
 
         _playerInputService.SetInputActive(false);
         var failedElement = _currentTowerElement;
@@ -239,19 +248,15 @@ public class TowerBuilderService
         //    failedElement.GetComponent<MeshRenderer>().material.mainTexture);
         failedElement.GetComponent<MeshRenderer>().material = _fruitItemSettings.LoseElementMaterial;
 
-        DestroyLoseElement(failedElement);
+        _gameService.GameOver();
+        _fruitsPool.ReleaseItem(failedElement);
     }
 
     private async UniTaskVoid DestroyLoseElement(GameObject failedElement)
     {
         await UniTask.Delay(2000);
-        _cameraService.LoseCameraOwerviewMove(failedElement);
-        await UniTask.Delay(100);
-        failedElement.SetActive(false);
-    }
-
-    void Restart()
-    {
-        _previousTowerElement = null;
+        //_cameraService.LoseCameraOwerviewMove(failedElement);
+        //await UniTask.Delay(100);
+        _fruitsPool.ReleaseItem(failedElement);
     }
 }

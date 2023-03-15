@@ -1,30 +1,29 @@
 ﻿using System;
+using UnityEngine;
+using Zenject;
 
-public class GameService
+public class GameService : MonoBehaviour
 {
-    public event Action RestartEvent;
+    public event Action OngameStart;
     public event Action OnGameOver;
 
+    [Inject]
     private PlayerInputService _playerInputService;
-    private CameraService _cameraService;
 
 
-    public GameService(PlayerInputService playerInputService, CameraService cameraService)
+    private void Start()
     {
-        _playerInputService = playerInputService;
-        _cameraService = cameraService;
-
-        _cameraService.OnLoseCamStop += GameOverResults;
+        StartGame();
     }
 
 
-    public void RestartGame()
+    public void StartGame()
     {
-        RestartEvent?.Invoke();
+        OngameStart?.Invoke();
         _playerInputService.SetInputActive(true);
     }
 
-    public void GameOverResults()
+    public void GameOver()
     {
         OnGameOver?.Invoke();
         _playerInputService.SetInputActive(false);
@@ -32,6 +31,5 @@ public class GameService
 
     private void Cleanup()
     {
-        _cameraService.OnLoseCamStop -= GameOverResults;
     }
 }
