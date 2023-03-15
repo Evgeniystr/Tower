@@ -3,22 +3,15 @@ using Zenject;
 
 public class SplashService
 {
-    private Transform _splashParent;
     private SplashPool _spalshPool;
-    private AnimationClip[] _animations;
-    private Sprite[] _backgrounds;
-    private SplashColorPalette _splashColorPalette;
-
-    private string[] phrases = 
-        { "Yummie", "Splash", "Mmmm", "Yaay!", "Juicy!", "Sabroso", "Om nom nom", "Oh Lord!", "Perfect!", "So GOOD!!", "Nice!"};
-
+    private Transform _splashParent;
 
     public SplashService(
-        [Inject(Id = Constants.SplashParent)] Transform _splashParent,
-        SplashView splashPrefab)
+        [Inject(Id = Constants.SplashParent)] Transform splashParent,
+        SplashSettings splashSettings)
     {
-        _splashParent = _splashParent;
-        _spalshPool = new SplashPool(splashPrefab, _splashParent);
+        _splashParent = splashParent;
+        _spalshPool = new SplashPool(_splashParent, splashSettings);
     }
 
 
@@ -26,24 +19,18 @@ public class SplashService
     {
         var splashView = _spalshPool.Get();
 
-        //set background sprite
-        int index;
+        var splashPosition = DefineSplashPosition();
 
-        index = Random.Range(0, _backgrounds.Length);
-        var sprite = _backgrounds[index];
+        splashView.SetAndPlay(splashPosition , () =>_spalshPool.ReleaseItem(splashView));
+    }
 
-        //set text
-        index = Random.Range(0, phrases.Length);
-        var text = phrases[index];
+    private Vector3 DefineSplashPosition()
+    {
+        var rect = _splashParent.GetComponent<RectTransform>().rect;
+        var x = Random.Range(rect.min.x, rect.max.x);
+        var y = Random.Range(rect.min.y, rect.max.y);
+        var newPos = new Vector3(x, y);
 
-        //set animation
-        index = Random.Range(0, _animations.Length);
-        var animation = _animations[index];
-
-        //set color
-        index = Random.Range(0, _splashColorPalette.ColorPalette.Length);
-        var colors = _splashColorPalette.ColorPalette[index];
-
-        splashView.SetAndPlay(animation, sprite, text, colors);
+        return newPos;
     }
 }

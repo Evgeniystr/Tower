@@ -32,6 +32,7 @@ public class TowerBuilderService
     public TowerBuilderService(
         [Inject(Id = Constants.FruitPrefab)] GameObject fruitPrefab,
         [Inject(Id = Constants.TowerBaseItem)] Transform towerBaseItem,
+        [Inject(Id = Constants.TowerParent)] Transform towerParent,
         SplashService splashService,
         AudioService audioService, 
         GameService gameService, 
@@ -39,7 +40,7 @@ public class TowerBuilderService
         FruitItemSettings fruitItemSettings,
         GameSettings gameSettings)
     {
-        _fruitsPool = new FruitsPool(fruitPrefab);
+        _fruitsPool = new FruitsPool(fruitPrefab, towerParent);
 
         _splashService = splashService;
         _audioService = audioService;

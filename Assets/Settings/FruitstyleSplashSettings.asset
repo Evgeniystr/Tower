@@ -10,8 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce7081674a3fb174e93d1dee43ee2435, type: 3}
-  m_Name: FruitstyleSplashPalette
+  m_Name: FruitstyleSplashSettings
   m_EditorClassIdentifier: 
+  Prefab: {fileID: 8009744785646972097, guid: 7c09c4b760d3a644290c339729b2bcf1, type: 3}
+  Phrases:
+  - Yummie
+  - Splash
+  - Mmmm
+  - Yaay!
+  - Juicy!
+  - Sabroso
+  - Om nom nom
+  - Oh Lord!
+  - Perfect!
+  - So GOOD!!
+  - Nice!
   ColorPalette:
   - bgColor:
       serializedVersion: 2
@@ -43,3 +56,9 @@ MonoBehaviour:
     textColor:
       serializedVersion: 2
       rgba: 4293652467
+  Animations:
+  - {fileID: 7400000, guid: d9c95c234ecb1da409639062f6572e8a, type: 2}
+  Backgrounds:
+  - {fileID: 21300000, guid: 1794d021ef907b94ab97bed043869871, type: 3}
+  - {fileID: 21300000, guid: e197d70107c12ad4990ed4826bd9e5b1, type: 3}
+  - {fileID: 21300000, guid: a1971c8e4d570df43874341bcd675e38, type: 3}

@@ -1,7 +1,8 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
+using Cysharp.Threading.Tasks;
 
 public class SplashView : MonoBehaviour
 {
@@ -13,47 +14,42 @@ public class SplashView : MonoBehaviour
     private TextMeshProUGUI _text;
 
 
-    public void SetAndPlay(AnimationClip animation, Sprite splashBackground, string text, ColorPair colors)
-    {
-        SetPositionAndRotation();
+    private SplashSettings _splashSettings;
 
-        _background.sprite = splashBackground;
+    public void Initialize(SplashSettings splashSettings)
+    {
+        _splashSettings = splashSettings;
+    }
+
+    public async void SetAndPlay(Vector3 position, Action animEndCallback)
+    {
+        SetPositionAndRotation(position);
+
+        var colors = _splashSettings.GetRandomColorsPreset();
+
+        _background.sprite = _splashSettings.GetRandomBackground();
         _background.color = colors.bgColor;
 
-        _text.text = text;
+        _text.text = _splashSettings.GetRandomPhrase();
         _text.color = colors.textColor;
 
-        _animationComponent.clip = animation;
+        _animationComponent.clip = _splashSettings.GetRandomAnimation();
 
-        gameObject.SetActive(true);
         _animationComponent.Play();
-        StartCoroutine(OnClipEnd());
+
+        //wait animation end
+        await UniTask.WaitUntil(() => !_animationComponent.isPlaying);
+
+        animEndCallback.Invoke();
     }
 
-    void SetPositionAndRotation()
+    void SetPositionAndRotation(Vector3 position)
     {
-        //position------
-        var rectHalfSize = transform.GetComponent<RectTransform>().sizeDelta / 2;
-
-        var x = Random.Range(transform.position.x - rectHalfSize.x, transform.position.x - rectHalfSize.x);
-        var y = Random.Range(transform.position.y - rectHalfSize.y, transform.position.y - rectHalfSize.y);
-        var newPos = new Vector3(x, y);
-
         //rotation------
-        var euler = Random.Range(-40, 40);
-        //Quaternion newRot = Quaternion.Euler(0, 0, euler);
+        var euler = UnityEngine.Random.Range(-40, 40);
         var xRot = new Vector3(0, 0, euler);
 
-        transform.localPosition = newPos;
+        transform.localPosition = position;
         transform.localEulerAngles = xRot;
-    }
-
-    IEnumerator OnClipEnd()
-    {
-        while (_animationComponent.isPlaying)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-        gameObject.SetActive(false);
     }
 }
