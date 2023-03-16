@@ -31,6 +31,8 @@ public class ScoreService
     public void Reset()
     {
         LastScore = 0;
+
+        OnScoreConterChange?.Invoke(LastScore, false);
     }
 
     //hi score ever
