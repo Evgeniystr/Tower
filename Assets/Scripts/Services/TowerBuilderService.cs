@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using DG.Tweening;
-using System.Threading;
 using System;
 using System.Linq;
 
 public class TowerBuilderService
 {
     public event Action<bool> OnTowerItemPlaced;//bool - isPerfect
-
-    public GameObject LastTowerItem => _allTowerElements.Last();
 
     private SplashService _splashService;
     private AudioService _audioService;
@@ -81,6 +78,13 @@ public class TowerBuilderService
         _playerInputService.OnReleaseEvent -= StopMakeNewFruit;
     }
 
+    public GameObject GetLastTowerItem()
+    {
+        return _allTowerElements.Count == 0 ?
+            _towerBaseItem.gameObject :
+            _allTowerElements.Last();
+    }
+
     private void StartMakeNewFruit()
     {
         SetupCurrentElement();
@@ -94,7 +98,7 @@ public class TowerBuilderService
 
         while (_isGrowing)
         {
-            var scaleUpValue = _gameSettings.scaleUpSpeed * Time.fixedDeltaTime;
+            var scaleUpValue = _gameSettings.ItemScaleUpSpeed * Time.fixedDeltaTime;
 
             var newScale = new Vector3(
                 _currentTowerElement.transform.localScale.x + scaleUpValue,
@@ -131,6 +135,8 @@ public class TowerBuilderService
     void StopMakeNewFruit()
     {
         _isGrowing = false;
+
+        _allTowerElements.Add(_currentTowerElement);
 
         if (PerfectMoveCheck())
             OnPerfectMove();
@@ -178,44 +184,42 @@ public class TowerBuilderService
 
     private void PerfectMovePerform()
     {
-        float lastItemFinalScaleModifier = 0.2f;
-        float lastItemMaxWaveScaleModifier = 0.4f;
-        float otherItemFinalScaleModifier = 0.3f;
-        float otherItemMaxWaveScaleModifier = otherItemFinalScaleModifier * 0.8f;
-
         var elementsLastIndex = _allTowerElements.Count - 1;
 
         for (int i = elementsLastIndex; i >= 0; i--)//cycle from tower top to bottom
         {
             var towerElement = _allTowerElements[i];
 
-            var waveDelayMS = (int)((elementsLastIndex - i) * _gameSettings.vaweDelayStep * 1000);
+            var waveItemDelay = ((elementsLastIndex - i) * _gameSettings.VaweDelayStep);
 
-            var maxWaveScaleModifier = i == _allTowerElements.Count ? lastItemMaxWaveScaleModifier : otherItemMaxWaveScaleModifier;
-            var finalScaleModifier = i == _allTowerElements.Count ? lastItemFinalScaleModifier : otherItemFinalScaleModifier;
-
+            var maxWaveScaleModifier = i == elementsLastIndex ? 
+                _gameSettings.LastItemMaxWaveScaleModifier : 
+                _gameSettings.OtherItemMaxWaveScaleModifier;
+            var finalScaleModifier = i == elementsLastIndex ? 
+                _gameSettings.LastItemFinalScaleModifier : 
+                _gameSettings.OtherItemFinalScaleModifier;
 
             Vector3 waveMaxScale = new Vector3(
-                Mathf.Clamp(towerElement.transform.localScale.x + maxWaveScaleModifier, 0, _gameSettings.maxScale),
+                Mathf.Clamp(towerElement.transform.localScale.x * maxWaveScaleModifier, 0, _gameSettings.MaxTowerItemScale),
                 towerElement.transform.localScale.y,
-                Mathf.Clamp(towerElement.transform.localScale.x + maxWaveScaleModifier, 0, _gameSettings.maxScale));
+                Mathf.Clamp(towerElement.transform.localScale.z * maxWaveScaleModifier, 0, _gameSettings.MaxTowerItemScale));
 
             Vector3 finalScale = new Vector3(
-                Mathf.Clamp(towerElement.transform.localScale.x + finalScaleModifier, 0, _gameSettings.maxScale),
+                Mathf.Clamp(towerElement.transform.localScale.x * finalScaleModifier, 0, _gameSettings.MaxTowerItemScale),
                 towerElement.transform.localScale.y,
-                Mathf.Clamp(towerElement.transform.localScale.x + finalScaleModifier, 0, _gameSettings.maxScale));
+                Mathf.Clamp(towerElement.transform.localScale.z * finalScaleModifier, 0, _gameSettings.MaxTowerItemScale));
 
-            DoWave(waveDelayMS, towerElement.transform, waveMaxScale, finalScale);
+            DoWave(waveItemDelay, towerElement.transform, waveMaxScale, finalScale);
         }
     }
 
-    private void DoWave(int startDelay, Transform towerElement, Vector3 waveMaxScale, Vector3 finalScale)
+    private void DoWave(float startDelay, Transform towerElement, Vector3 waveMaxScale, Vector3 finalScale)
     {
         var seq = DOTween.Sequence();
-
+        
         seq.AppendInterval(startDelay);
-        seq.Append(towerElement.DOScale(waveMaxScale, _gameSettings.vaweScaleSpeed));
-        seq.Append(towerElement.DOScale(finalScale, _gameSettings.vaweScaleSpeed));
+        seq.Append(towerElement.DOScale(waveMaxScale, _gameSettings.VaweScaleDuration));
+        seq.Append(towerElement.DOScale(finalScale, _gameSettings.VaweScaleDuration));
 
         seq.Play();
     }
@@ -237,7 +241,6 @@ public class TowerBuilderService
 
     private void Lose()
     {
-        Debug.LogError("Lose");//
         _isGrowing = false;
 
         _playerInputService.SetInputActive(false);
@@ -251,6 +254,7 @@ public class TowerBuilderService
 
         _gameService.GameOver();
         _fruitsPool.ReleaseItem(failedElement);
+        _allTowerElements.Remove(failedElement);
     }
 
     private async UniTaskVoid DestroyLoseElement(GameObject failedElement)

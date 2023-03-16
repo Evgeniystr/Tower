@@ -52,7 +52,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<GameService>().FromInstance(_gameService).AsSingle();
         Container.Bind<SplashService>().AsSingle();
         Container.Bind<TowerBuilderService>().AsSingle();
-        Container.Bind<CameraService>().AsSingle();
+        Container.Bind<CameraService>().AsSingle().NonLazy();
         Container.Bind<ScoreService>().AsSingle();
     }
 }

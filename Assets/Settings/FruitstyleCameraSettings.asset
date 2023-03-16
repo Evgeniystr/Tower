@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FruitstyleCameraSettings
   m_EditorClassIdentifier: 
   cameraFolowDuration: 0.2
-  CamFailAnimDuration: 0.4
-  CameraBaseFailDistance: 1
-  CameraCoofFailDistance: 0.2
+  CamFailAnimDuration: 0.7
+  CameraBaseFailDistance: 0.8
+  CameraCoofFailDistance: 0.35
