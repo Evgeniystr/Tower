@@ -66,10 +66,43 @@ public class TowerBuilderService
         _playerInputService.OnTapEvent += StartMakeNewFruit;
         _playerInputService.OnReleaseEvent += StopMakeNewFruit;
 
-        foreach (var item in _allTowerElements)
-            _fruitsPool.ReleaseItem(item);
+        //foreach (var item in _allTowerElements)
+        //    _fruitsPool.ReleaseItem(item);
+        CleareTower();//
 
         _previousTowerElement = null;
+    }
+
+    public async void CleareTower()
+    {
+        if (_allTowerElements.Count == 0)
+            return;
+
+        var duration = 1f;
+        var curentDuration = duration;
+        int lastTowerItemIndex = 0;
+
+        while (curentDuration > 0)
+        {
+            var t = Mathf.InverseLerp(0, duration, curentDuration);
+
+            var pointedItemIndex = (int)Mathf.Lerp(0, _allTowerElements.Count -1, t);
+
+            if(lastTowerItemIndex != pointedItemIndex)
+            {
+                var towerItem = _allTowerElements[pointedItemIndex];
+
+                //scale down
+                towerItem.transform.
+                    DOScale(new Vector3(0, towerItem.transform.localScale.y, 0), 0.1f).
+                    OnComplete(() => _fruitsPool.ReleaseItem(towerItem));
+                
+                lastTowerItemIndex = pointedItemIndex;
+            }
+
+            curentDuration -= Time.fixedDeltaTime;
+            await UniTask.WaitForFixedUpdate();
+        }
     }
 
     private void OnGameEnd()
@@ -244,24 +277,23 @@ public class TowerBuilderService
         _isGrowing = false;
 
         _playerInputService.SetInputActive(false);
+
+        DestroyLoseElement();
+    }
+
+    private async UniTaskVoid DestroyLoseElement()
+    {
         var failedElement = _currentTowerElement;
         _currentTowerElement = null;
 
         //change lose material to red
-        //loseElementMaterial.SetTexture("_MainTex",
-        //    failedElement.GetComponent<MeshRenderer>().material.mainTexture);
         failedElement.GetComponent<MeshRenderer>().material = _fruitItemSettings.LoseElementMaterial;
 
-        _gameService.GameOver();
+        await UniTask.Delay(1000);
+
         _fruitsPool.ReleaseItem(failedElement);
         _allTowerElements.Remove(failedElement);
-    }
 
-    private async UniTaskVoid DestroyLoseElement(GameObject failedElement)
-    {
-        await UniTask.Delay(2000);
-        //_cameraService.LoseCameraOwerviewMove(failedElement);
-        //await UniTask.Delay(100);
-        _fruitsPool.ReleaseItem(failedElement);
+        _gameService.GameOver();
     }
 }

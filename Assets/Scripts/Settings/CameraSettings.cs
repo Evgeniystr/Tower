@@ -5,6 +5,7 @@ public class CameraSettings : ScriptableObject
 {
     public float cameraFolowDuration;
     public float CamFailAnimDuration;
+    public float CamRestartAnimDuration;
     public float CameraBaseFailDistance;
     public float CameraCoofFailDistance;
 }

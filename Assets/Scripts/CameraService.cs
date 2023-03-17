@@ -11,8 +11,7 @@ public class CameraService
     private CameraSettings _cameraSettings;
 
     private Transform _startLoockAt;
-    private Vector3 _cameraOffset;
-    private Quaternion _defaultRotation;
+    private Vector3 _camDafaultPosition;
 
     private GameService _gameService;
     private TowerBuilderService _towerBuilderService;
@@ -33,18 +32,27 @@ public class CameraService
         _gameService = gameService;
         _towerBuilderService = towerBuilderService;
 
-        _cameraOffset = _camTransform.position;
-        _defaultRotation = _camTransform.rotation;
+        _camDafaultPosition = _camTransform.position;
 
         _towerBuilderService.OnTowerItemPlaced += LookAtLastTowerItem;
         _gameService.OnGameOver += LoseCameraOwerviewMove;
     }
 
 
-    public void RestartCamera()
+    public void NewGameCameraMove()
     {
-        SetLookAt(_startLoockAt.gameObject);
-        _camTransform.rotation = _defaultRotation;
+        var camMoveTo = _startLoockAt.position + _camDafaultPosition;
+
+        var camLookAtDirection = _startLoockAt.position - camMoveTo;
+        var camRotate = Quaternion.LookRotation(camLookAtDirection, Vector3.up);
+
+        var seq = DOTween.Sequence();
+
+        seq.SetEase(Ease.InOutQuint);
+        seq.Append(_camTransform.DOLocalMove(camMoveTo, _cameraSettings.CamRestartAnimDuration));
+        seq.Join(_camTransform.DORotateQuaternion(camRotate, _cameraSettings.CamRestartAnimDuration));
+        seq.OnComplete(() => _gameService.StartGame());
+        seq.Play();
     }
 
     private void LookAtLastTowerItem(bool isPerfect)
@@ -63,10 +71,11 @@ public class CameraService
         if (_camMovement != null && _camMovement.active)
             _camMovement.Kill();
 
-        var destination = position + _cameraOffset;
+        var destination = position + _camDafaultPosition;
 
         _camMovement = DOTween.Sequence();
         _camMovement.Append(_camTransform.DOMove(destination, _cameraSettings.cameraFolowDuration));
+        _camMovement.Play();
     }
 
     //failed element
@@ -78,13 +87,14 @@ public class CameraService
         var far = _cameraSettings.CameraCoofFailDistance * lastTowerItem.transform.position.y + _cameraSettings.CameraBaseFailDistance;
 
         var lookAtPos = new Vector3(0, towerHalfHeight, 0);
-        var camMoveTo = new Vector3(0, towerHalfHeight, far)/* + _cameraOffset*/;
+        var camMoveTo = new Vector3(0, towerHalfHeight, far);
 
         var camLookAtDirection = lookAtPos - camMoveTo;
         var camRotate = Quaternion.LookRotation(camLookAtDirection, Vector3.up);
-
+       
         var seq = DOTween.Sequence();
 
+        seq.SetEase(Ease.InOutQuint);
         seq.Append(_camTransform.DOLocalMove(camMoveTo, _cameraSettings.CamFailAnimDuration));
         seq.Join(_camTransform.DORotateQuaternion(camRotate, _cameraSettings.CamFailAnimDuration));
         seq.OnComplete(() => OnLoseCamStop?.Invoke());

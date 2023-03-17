@@ -2,16 +2,21 @@
 using TMPro;
 using Zenject;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class ScoreResultPopUpView : MonoBehaviour
 {
     [Inject]
     private ScoreService _scoreService;
     [Inject]
-    private GameService _gameService;
+    private CameraService _cameraService;
+    [Inject]
+    private TowerBuilderService _towerBuilderService;
 
     [SerializeField]
     private GameObject _viewport;
+    [SerializeField]
+    private CanvasGroup _viewportCanvasGroup;
     [SerializeField]
     private TMP_Text _lastScore;
     [SerializeField]
@@ -22,19 +27,21 @@ public class ScoreResultPopUpView : MonoBehaviour
 
     private void Start()
     {
-        _gameService.OnGameOver += SetAndShowScores;
-        _viewport.SetActive(false);
+        _cameraService.OnLoseCamStop += ShowPopup;
+
         _restartButton.onClick.AddListener(Restart);
+
+        _viewport.SetActive(false);
     }
 
     private void OnDestroy()
     {
-        _gameService.OnGameOver += SetAndShowScores;
+        _cameraService.OnLoseCamStop -= ShowPopup;
         _restartButton.onClick.RemoveListener(Restart);
     }
 
 
-    public void SetAndShowScores()
+    public void ShowPopup()
     {
         string scoreInfo;
 
@@ -44,12 +51,22 @@ public class ScoreResultPopUpView : MonoBehaviour
         scoreInfo = $"Best {_scoreService.HiScore}";
         _bestScore.text = scoreInfo;
 
-        _viewport.SetActive(true);
+        var seq = DOTween.Sequence();
+        seq.AppendInterval(1);//add some time for builded tower lookup
+        seq.AppendCallback(() => {
+            _viewportCanvasGroup.alpha = 0;
+            _viewport.SetActive(true);
+            });
+        seq.Append(DOTween.To(
+            () => _viewportCanvasGroup.alpha, 
+            (value) => _viewportCanvasGroup.alpha = value, 
+            1, 0.6f).SetEase(Ease.OutExpo));
     }
 
     public void Restart()
     {
-        _gameService.StartGame();
+        _cameraService.NewGameCameraMove();
+        _towerBuilderService.CleareTower();
         _viewport.SetActive(false);
     }
 }
