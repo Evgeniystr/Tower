@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraFolowDuration: 0.2
   CamFailAnimDuration: 2
+  CamRestartAnimDuration: 2
   CameraBaseFailDistance: 0.8
   CameraCoofFailDistance: 0.35

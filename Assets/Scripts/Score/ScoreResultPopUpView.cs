@@ -12,6 +12,8 @@ public class ScoreResultPopUpView : MonoBehaviour
     private CameraService _cameraService;
     [Inject]
     private TowerBuilderService _towerBuilderService;
+    [Inject]//
+    private GameService _gameService;//
 
     [SerializeField]
     private GameObject _viewport;
@@ -66,6 +68,7 @@ public class ScoreResultPopUpView : MonoBehaviour
     public void Restart()
     {
         _cameraService.NewGameCameraMove();
+        _gameService.StartGame();//
         _towerBuilderService.CleareTower();
         _viewport.SetActive(false);
     }

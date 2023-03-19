@@ -51,7 +51,7 @@ public class CameraService
         seq.SetEase(Ease.InOutQuint);
         seq.Append(_camTransform.DOLocalMove(camMoveTo, _cameraSettings.CamRestartAnimDuration));
         seq.Join(_camTransform.DORotateQuaternion(camRotate, _cameraSettings.CamRestartAnimDuration));
-        seq.OnComplete(() => _gameService.StartGame());
+        //seq.OnComplete(() => _gameService.StartGame());
         seq.Play();
     }
 

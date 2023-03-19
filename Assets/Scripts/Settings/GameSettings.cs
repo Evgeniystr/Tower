@@ -5,6 +5,7 @@ public class GameSettings : ScriptableObject
 {
     public float MaxTowerItemScale;
     public float ItemScaleUpSpeed;
+    public float PerfectMoveSizeCoef;
 
     [Header("Wave settings")]
     public float VaweScaleDuration;

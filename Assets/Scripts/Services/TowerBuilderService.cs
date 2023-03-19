@@ -24,6 +24,7 @@ public class TowerBuilderService
 
     private FruitsPool _fruitsPool;
 
+    private float _maxPerfectMoveOffset;
     private bool _isGrowing;
 
     public TowerBuilderService(
@@ -59,6 +60,11 @@ public class TowerBuilderService
 
         _gameService.OngameStart += OnGameStart;
         _gameService.OnGameOver += OnGameEnd;
+
+        var maxPerfectMoveOffset =
+            _towerBaseItem.GetComponent<MeshFilter>().mesh.bounds.size.x *
+            _towerBaseItem.localScale.x *
+            _gameSettings.PerfectMoveSizeCoef;
     }
 
     private void OnGameStart()
@@ -66,9 +72,7 @@ public class TowerBuilderService
         _playerInputService.OnTapEvent += StartMakeNewFruit;
         _playerInputService.OnReleaseEvent += StopMakeNewFruit;
 
-        //foreach (var item in _allTowerElements)
-        //    _fruitsPool.ReleaseItem(item);
-        CleareTower();//
+        CleareTower();
 
         _previousTowerElement = null;
     }
@@ -129,6 +133,10 @@ public class TowerBuilderService
     {
         _isGrowing = true;
 
+        var failSize = _previousTowerElement == null ?
+            _towerBaseItem.localScale.x :
+            _previousTowerElement.transform.localScale.x;
+
         while (_isGrowing)
         {
             var scaleUpValue = _gameSettings.ItemScaleUpSpeed * Time.fixedDeltaTime;
@@ -142,12 +150,12 @@ public class TowerBuilderService
 
             await UniTask.WaitForFixedUpdate();
 
-            if (LoseCheck())
+            if (IsLoseCheck(failSize))
                 Lose();
         }
     }
 
-    void SetupCurrentElement()
+    private void SetupCurrentElement()
     {
         _currentTowerElement = _fruitsPool.Get();
 
@@ -165,8 +173,11 @@ public class TowerBuilderService
         _currentTowerElement.GetComponent<MeshRenderer>().material = _fruitItemSettings.GetRandomMaterial();
     }
 
-    void StopMakeNewFruit()
+    private void StopMakeNewFruit()
     {
+        if (!_isGrowing)
+            return;
+
         _isGrowing = false;
 
         _allTowerElements.Add(_currentTowerElement);
@@ -179,14 +190,14 @@ public class TowerBuilderService
         _previousTowerElement = _currentTowerElement;
     }
 
-    void OnNormalMove()
+    private void OnNormalMove()
     {
         OnTowerItemPlaced?.Invoke(false);
 
         _audioService.DoSplatterSound();
     }
 
-    void OnPerfectMove()
+    private void OnPerfectMove()
     {
         PerfectMovePerform();
 
@@ -198,21 +209,28 @@ public class TowerBuilderService
     }
 
 
-    bool PerfectMoveCheck()
+    private bool PerfectMoveCheck()
     {
         if (_previousTowerElement == null)
             return false;
 
-        var minPerfScale = _previousTowerElement.transform.localScale * 0.95f;
+        //per item calculations
+        var currentItemSize = 
+            _currentTowerElement.GetComponent<MeshFilter>().mesh.bounds.size.x * 
+            _currentTowerElement.transform.localScale.x;
 
-        if (_currentTowerElement.transform.localScale.x >= minPerfScale.x && _currentTowerElement.transform.localScale.z >= minPerfScale.z)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        var previousItemSize = 
+            _previousTowerElement.GetComponent<MeshFilter>().mesh.bounds.size.x * 
+            _previousTowerElement.transform.localScale.x;
+
+        var prevItemOffsetSize = previousItemSize * _gameSettings.PerfectMoveSizeCoef;
+        var offset = MathF.Min(prevItemOffsetSize, _maxPerfectMoveOffset);
+
+        var perfectMoveBorderValue = previousItemSize - offset;
+
+        var isPerfectMove = currentItemSize >= perfectMoveBorderValue;
+
+        return isPerfectMove;
     }
 
     private void PerfectMovePerform()
@@ -258,16 +276,11 @@ public class TowerBuilderService
     }
 
     //lose
-    private bool LoseCheck()
+    private bool IsLoseCheck(float failSize)
     {
         var currScale = _currentTowerElement.transform.localScale;
 
-        Vector3 loseScale = _previousTowerElement == null ? 
-            _towerBaseItem.localScale * 1.1f :
-            _previousTowerElement.transform.localScale * 1.1f;
-
-        //false - lose, true - go on
-        var isLose = currScale.x >= loseScale.x || currScale.z >= loseScale.z;
+        var isLose = currScale.x >= failSize;
 
         return isLose;
     }
