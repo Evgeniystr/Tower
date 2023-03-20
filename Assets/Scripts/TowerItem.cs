@@ -15,7 +15,7 @@ public class TowerItem : MonoBehaviour
     public Transform Transform { get { return _transform; } }
     public MeshFilter MeshFilter { get { return _meshFilter; } }
     public float Size { get; private set; } = 1;
-    public float OffsetSize => Size * _gameSettings.PerfectMoveSizeCoef;
+    //public float OffsetSize => Size * _gameSettings.PerfectMoveSizeCoef;
 
     private TowerBuilderService _towerBuilderService;
     private FruitItemSettings _fruitItemSettings;
@@ -76,12 +76,11 @@ public class TowerItem : MonoBehaviour
 
             _transform.localScale = new Vector3(Size, _dafaultYscale, Size);
 
-            await UniTask.WaitForFixedUpdate();
-
             if (Size >= _failSize)
                 _towerBuilderService.Lose();
-        }
 
+            await UniTask.WaitForFixedUpdate();
+        }
     }
 
     public void StopGrowing()

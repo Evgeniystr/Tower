@@ -21,7 +21,7 @@ public class TowerBuilderService
     private List<TowerItem> _allTowerElements;
     private TowerItem _currentTowerElement;
     private TowerItem _previousTowerElement;
-    private float _maxPerfectMoveOffset;
+    private float _maxPerfectMoveBorder;
 
     private bool _isInitialized;
 
@@ -50,7 +50,6 @@ public class TowerBuilderService
         _fruitItemSettings = fruitItemSettings;
         _gameSettings = gameSettings;
 
-
         _gameService.OnStartupInitialize += Initialize;
     }
 
@@ -68,10 +67,7 @@ public class TowerBuilderService
         _gameService.OnGameStart += OnGameStart;
         _gameService.OnGameOver += OnGameEnd;
 
-        _maxPerfectMoveOffset =
-            _towerBaseItem.MeshFilter.mesh.bounds.size.x *
-            _towerBaseItem.Transform.localScale.x *
-            _gameSettings.PerfectMoveSizeCoef;
+        _maxPerfectMoveBorder = _towerBaseItem.Size * (1 - _gameSettings.PerfectMoveSizeCoef);
     }
 
     private void OnGameStart()
@@ -182,9 +178,8 @@ public class TowerBuilderService
         if (_previousTowerElement == null)
             return false;
 
-        var offset = MathF.Min(_previousTowerElement.OffsetSize, _maxPerfectMoveOffset);
-
-        var perfectMoveBorderValue = _previousTowerElement.Size - offset;
+        var currentPerfectBorder = _previousTowerElement.Size * (1 - _gameSettings.PerfectMoveSizeCoef);
+        var perfectMoveBorderValue = MathF.Min(currentPerfectBorder, _maxPerfectMoveBorder);
 
         var isPerfectMove = 
             _currentTowerElement.Size >= perfectMoveBorderValue && 
