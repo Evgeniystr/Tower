@@ -10,7 +10,7 @@ public class CameraService
     private Transform _camTransform;
     private CameraSettings _cameraSettings;
 
-    private Transform _startLoockAt;
+    private TowerItem _startLoockAt;
     private Vector3 _camDafaultPosition;
 
     private GameService _gameService;
@@ -20,7 +20,7 @@ public class CameraService
 
     public CameraService(
         [Inject(Id = Constants.Camera)] Transform camTransform,
-        [Inject(Id = Constants.TowerBaseItem)] Transform towerBaseItem,
+        [Inject(Id = Constants.TowerBaseItem)] TowerItem towerBaseItem,
         CameraSettings cameraSettings,
         GameService gameService,
         TowerBuilderService towerBuilderService)
@@ -41,9 +41,9 @@ public class CameraService
 
     public void NewGameCameraMove()
     {
-        var camMoveTo = _startLoockAt.position + _camDafaultPosition;
+        var camMoveTo = _startLoockAt.Transform.position + _camDafaultPosition;
 
-        var camLookAtDirection = _startLoockAt.position - camMoveTo;
+        var camLookAtDirection = _startLoockAt.Transform.position - camMoveTo;
         var camRotate = Quaternion.LookRotation(camLookAtDirection, Vector3.up);
 
         var seq = DOTween.Sequence();
@@ -51,7 +51,6 @@ public class CameraService
         seq.SetEase(Ease.InOutQuint);
         seq.Append(_camTransform.DOLocalMove(camMoveTo, _cameraSettings.CamRestartAnimDuration));
         seq.Join(_camTransform.DORotateQuaternion(camRotate, _cameraSettings.CamRestartAnimDuration));
-        //seq.OnComplete(() => _gameService.StartGame());
         seq.Play();
     }
 
@@ -61,9 +60,9 @@ public class CameraService
         SetLookAt(target);
     }
 
-    public void SetLookAt(GameObject go)
+    public void SetLookAt(TowerItem target)
     {
-        CameraMoveTo(go.transform.position);
+        CameraMoveTo(target.Transform.position);
     }
 
    void CameraMoveTo(Vector3 position)

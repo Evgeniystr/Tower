@@ -797,6 +797,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 455651279}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &455651281 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4524542810437098186, guid: 78227fa7ac3394d4aa8df39aa58d83c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 455651279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65dc7720b8be0f14ab1d91c76f2b543e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &473763480
 GameObject:
   m_ObjectHideFlags: 0
@@ -1374,8 +1386,8 @@ MonoBehaviour:
   _splashParent: {fileID: 884885034}
   _towerParent: {fileID: 123953264}
   _camTransform: {fileID: 612463078}
-  _towerBaseItem: {fileID: 455651280}
-  _fruitPrefab: {fileID: 1046295401011820490, guid: 78227fa7ac3394d4aa8df39aa58d83c0,
+  _towerBaseItem: {fileID: 455651281}
+  _fruitPrefab: {fileID: 4524542810437098186, guid: 78227fa7ac3394d4aa8df39aa58d83c0,
     type: 3}
   _audioService: {fileID: 1185448168}
   _playerInputService: {fileID: 1185448169}

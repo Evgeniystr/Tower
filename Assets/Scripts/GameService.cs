@@ -4,7 +4,8 @@ using Zenject;
 
 public class GameService : MonoBehaviour
 {
-    public event Action OngameStart;
+    public event Action OnStartupInitialize;
+    public event Action OnGameStart;
     public event Action OnGameOver;
 
     [Inject]
@@ -13,13 +14,14 @@ public class GameService : MonoBehaviour
 
     private void Start()
     {
+        OnStartupInitialize?.Invoke();
         StartGame();
     }
 
 
     public void StartGame()
     {
-        OngameStart?.Invoke();
+        OnGameStart?.Invoke();
         _playerInputService.SetInputActive(true);
     }
 

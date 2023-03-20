@@ -21,9 +21,9 @@ public class GameInstaller : MonoInstaller
     [SerializeField]
     private Transform _camTransform;
     [SerializeField]
-    private Transform _towerBaseItem;
+    private TowerItem _towerBaseItem;
     [SerializeField]
-    private GameObject _fruitPrefab;
+    private TowerItem _fruitPrefab;
 
     [SerializeField]
     private AudioService _audioService;
@@ -44,8 +44,8 @@ public class GameInstaller : MonoInstaller
         Container.Bind<Transform>().WithId(Constants.Camera).FromInstance(_camTransform).AsCached();
         Container.Bind<Transform>().WithId(Constants.SplashParent).FromInstance(_splashParent).AsCached();
         Container.Bind<Transform>().WithId(Constants.TowerParent).FromInstance(_towerParent).AsCached();
-        Container.Bind<GameObject>().WithId(Constants.FruitPrefab).FromInstance(_fruitPrefab).AsSingle();
-        Container.Bind<Transform>().WithId(Constants.TowerBaseItem).FromInstance(_towerBaseItem).AsSingle();
+        Container.Bind<TowerItem>().WithId(Constants.TowerBaseItem).FromInstance(_towerBaseItem).AsCached();
+        Container.Bind<TowerItem>().FromInstance(_fruitPrefab).AsCached();
 
         Container.Bind<AudioService>().FromInstance(_audioService).AsSingle();
         Container.Bind<PlayerInputService>().FromInstance(_playerInputService).AsSingle();

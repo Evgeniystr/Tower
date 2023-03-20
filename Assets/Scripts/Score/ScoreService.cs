@@ -16,7 +16,7 @@ public class ScoreService
         _gameService = gameService;
         _towerBuilderService = towerBuilderService;
 
-        _gameService.OngameStart += Reset;
+        _gameService.OnGameStart += Reset;
         _towerBuilderService.OnTowerItemPlaced += AddScore;
     }
 
