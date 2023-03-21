@@ -789,6 +789,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fruit
       objectReference: {fileID: 0}
+    - target: {fileID: 1046295401011820490, guid: 78227fa7ac3394d4aa8df39aa58d83c0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78227fa7ac3394d4aa8df39aa58d83c0, type: 3}
 --- !u!4 &455651280 stripped

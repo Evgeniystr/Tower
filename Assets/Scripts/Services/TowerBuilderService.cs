@@ -21,7 +21,7 @@ public class TowerBuilderService
     private List<TowerItem> _allTowerElements;
     private TowerItem _currentTowerElement;
     private TowerItem _previousTowerElement;
-    private float _maxPerfectMoveBorder;
+    private float _maxPerfectMoveTriggerValue;
 
     private bool _isInitialized;
 
@@ -29,7 +29,6 @@ public class TowerBuilderService
 
 
     public TowerBuilderService(
-        [Inject(Id = Constants.TowerBaseItem)] TowerItem towerBaseItem,
         [Inject(Id = Constants.TowerParent)] Transform towerParent,
         TowerItem fruitPrefab,
         SplashService splashService,
@@ -46,7 +45,6 @@ public class TowerBuilderService
         _gameService = gameService;
         _playerInputService = playerInputService;
 
-        _towerBaseItem = towerBaseItem;
         _fruitItemSettings = fruitItemSettings;
         _gameSettings = gameSettings;
 
@@ -58,16 +56,12 @@ public class TowerBuilderService
         if (_isInitialized)
             return;
 
-        _isInitialized = true;
-
         _allTowerElements = new List<TowerItem>();
-
-        _towerBaseItem.GetComponent<MeshRenderer>().material = _fruitItemSettings.GetRandomMaterial();
 
         _gameService.OnGameStart += OnGameStart;
         _gameService.OnGameOver += OnGameEnd;
 
-        _maxPerfectMoveBorder = _towerBaseItem.Size * (1 - _gameSettings.PerfectMoveSizeCoef);
+        _isInitialized = true;
     }
 
     private void OnGameStart()
@@ -75,9 +69,22 @@ public class TowerBuilderService
         _playerInputService.OnTapEvent += StartMakeNewFruit;
         _playerInputService.OnReleaseEvent += StopMakeNewFruit;
 
+        SetBaseItem();
         CleareTower();
 
         _previousTowerElement = null;
+    }
+
+    private void SetBaseItem()
+    {
+        if(_towerBaseItem == null)
+        {
+            _towerBaseItem = _fruitsPool.Get();
+            _towerBaseItem.SetupAsBaseItem();
+            _maxPerfectMoveTriggerValue = _towerBaseItem.GetPrefectMoveTriggerValue();
+        }
+
+        _towerBaseItem.SetRandomMaterial();
     }
 
     public async void CleareTower()
@@ -178,11 +185,11 @@ public class TowerBuilderService
         if (_previousTowerElement == null)
             return false;
 
-        var currentPerfectBorder = _previousTowerElement.Size * (1 - _gameSettings.PerfectMoveSizeCoef);
-        var perfectMoveBorderValue = MathF.Min(currentPerfectBorder, _maxPerfectMoveBorder);
+        var triggerValue = _previousTowerElement.GetPrefectMoveTriggerValue();
+        var resultPerfectBorder = MathF.Min(triggerValue, _maxPerfectMoveTriggerValue);
 
         var isPerfectMove = 
-            _currentTowerElement.Size >= perfectMoveBorderValue && 
+            _currentTowerElement.Size >= resultPerfectBorder && 
             _currentTowerElement.Size < _previousTowerElement.Size;
 
         return isPerfectMove;

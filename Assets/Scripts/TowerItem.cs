@@ -15,7 +15,6 @@ public class TowerItem : MonoBehaviour
     public Transform Transform { get { return _transform; } }
     public MeshFilter MeshFilter { get { return _meshFilter; } }
     public float Size { get; private set; } = 1;
-    //public float OffsetSize => Size * _gameSettings.PerfectMoveSizeCoef;
 
     private TowerBuilderService _towerBuilderService;
     private FruitItemSettings _fruitItemSettings;
@@ -52,6 +51,23 @@ public class TowerItem : MonoBehaviour
 
         //set material
         SetRandomMaterial();
+    }
+
+    public void SetupAsBaseItem()
+    {
+        Size = 1;
+
+        _transform.localScale = new Vector3(Size, _dafaultYscale, Size);
+        _transform.position = Vector3.zero;
+    }
+
+    public float GetPrefectMoveTriggerValue()
+    {
+        var perfectMoveOffset = Size * _gameSettings.PerfectMoveSizeCoef;
+
+        var perfectMoveTriggerValue = Size - perfectMoveOffset;
+
+        return perfectMoveTriggerValue;
     }
 
     public void SetRandomMaterial()
