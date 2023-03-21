@@ -7,6 +7,7 @@ public class GameSettings : ScriptableObject
     public float ItemScaleUpSpeed;
     [Range(0, 1)]
     public float PerfectMoveSizeCoef;
+    public int PerfectMovePrewarmRequired;
 
     [Header("Wave settings")]
     public float VaweScaleDuration;

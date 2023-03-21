@@ -15,6 +15,7 @@ MonoBehaviour:
   MaxTowerItemScale: 2.2
   ItemScaleUpSpeed: 0.5
   PerfectMoveSizeCoef: 0.05
+  PerfectMovePrewarmRequired: 2
   VaweScaleDuration: 0.15
   VaweDelayStep: 0.2
   LastItemMaxWaveScaleModifier: 1.4

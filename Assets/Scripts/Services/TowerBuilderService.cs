@@ -27,6 +27,8 @@ public class TowerBuilderService
 
     private FruitsPool _fruitsPool;
 
+    private int _perfectMoveCounter;
+
 
     public TowerBuilderService(
         [Inject(Id = Constants.TowerParent)] Transform towerParent,
@@ -72,6 +74,7 @@ public class TowerBuilderService
         SetBaseItem();
         CleareTower();
 
+        _perfectMoveCounter = 0;
         _previousTowerElement = null;
     }
 
@@ -154,30 +157,34 @@ public class TowerBuilderService
 
         _allTowerElements.Add(_currentTowerElement);
 
-        if (PerfectMoveCheck())
+        var isPerfectMove = PerfectMoveCheck();
+
+        if (isPerfectMove)
             OnPerfectMove();
         else
             OnNormalMove();
+
+        OnTowerItemPlaced?.Invoke(isPerfectMove);
 
         _previousTowerElement = _currentTowerElement;
     }
 
     private void OnNormalMove()
     {
-        OnTowerItemPlaced?.Invoke(false);
-
+        _perfectMoveCounter = 0;
         _audioService.DoSplatterSound();
     }
 
     private void OnPerfectMove()
     {
-        PerfectMovePerform();
+        _perfectMoveCounter++;
 
         _splashService.DoSplash();
 
-        OnTowerItemPlaced?.Invoke(true);
-
         _audioService.DoPerfectSplatterSound();
+
+        if(_perfectMoveCounter > _gameSettings.PerfectMovePrewarmRequired)
+            DePerfectMoveWave();
     }
 
     private bool PerfectMoveCheck()
@@ -195,7 +202,7 @@ public class TowerBuilderService
         return isPerfectMove;
     }
 
-    private void PerfectMovePerform()
+    private void DePerfectMoveWave()
     {
         var elementsLastIndex = _allTowerElements.Count - 1;
 
