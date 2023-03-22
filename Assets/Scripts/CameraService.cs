@@ -77,13 +77,12 @@ public class CameraService
         _camMovement.Play();
     }
 
-    //failed element
     public void LoseCameraOwerviewMove()
     {
         var lastTowerItem = _towerBuilderService.GetLastTowerItem();
 
         var towerHalfHeight = lastTowerItem.transform.position.y / 2;
-        var far = _cameraSettings.CameraCoofFailDistance * lastTowerItem.transform.position.y + _cameraSettings.CameraBaseFailDistance;
+        var far = _cameraSettings.CameraCoofFailDistance * lastTowerItem.Transform.position.y + _cameraSettings.CameraBaseFailDistance;
 
         var lookAtPos = new Vector3(0, towerHalfHeight, 0);
         var camMoveTo = new Vector3(0, towerHalfHeight, far);

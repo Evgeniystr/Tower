@@ -206,14 +206,21 @@ public class TowerBuilderService
     {
         var elementsLastIndex = _allTowerElements.Count - 1;
 
-        for (int i = elementsLastIndex; i >= 0; i--)//cycle from tower top to bottom
+        var waveLength = MathF.Min(_gameSettings.WaveLength, _allTowerElements.Count);
+        var iterationLastItem = _allTowerElements.Count - waveLength;
+
+        var powerScaleStep = 1f / _gameSettings.WaveLength;
+        var powerValue = 1f;
+
+        for (int i = elementsLastIndex; i >= iterationLastItem; i--)//cycle from tower top to bottom
         {
             var towerElement = _allTowerElements[i];
 
             var waveStartDelay = ((elementsLastIndex - i) * _gameSettings.VaweDelayStep);
             var isTopItem = i == elementsLastIndex;
 
-            towerElement.DoWave(waveStartDelay, isTopItem);
+            towerElement.DoWave(waveStartDelay, isTopItem, powerValue);
+            powerValue -= powerScaleStep;
         }
     }
 

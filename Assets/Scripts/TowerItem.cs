@@ -107,7 +107,7 @@ public class TowerItem : MonoBehaviour
         _isGrowing = false;
     }
 
-    public void DoWave(float startDelay, bool isTopItem)
+    public void DoWave(float startDelay, bool isTopItem, float powerScale = 1)
     {
         var maxWaveScaleModifier = isTopItem ?
             _gameSettings.LastItemMaxWaveScaleModifier :
@@ -116,13 +116,14 @@ public class TowerItem : MonoBehaviour
             _gameSettings.LastItemFinalScaleModifier :
             _gameSettings.OtherItemFinalScaleModifier;
 
-        Size *= finalScaleModifier;
+        Size += Size * (finalScaleModifier * powerScale);
+        var maxWaveItemSize = Size + Size * (maxWaveScaleModifier * powerScale);
 
 
         Vector3 waveMaxScale = new Vector3(
-            Mathf.Clamp(Size * maxWaveScaleModifier, 0, _gameSettings.MaxTowerItemScale),
+            Mathf.Clamp(maxWaveItemSize, 0, _gameSettings.MaxTowerItemScale),
             _dafaultYscale,
-            Mathf.Clamp(Size * maxWaveScaleModifier, 0, _gameSettings.MaxTowerItemScale));
+            Mathf.Clamp(maxWaveItemSize, 0, _gameSettings.MaxTowerItemScale));
 
         Vector3 finalScale = new Vector3(
             Mathf.Clamp(Size, 0, _gameSettings.MaxTowerItemScale),

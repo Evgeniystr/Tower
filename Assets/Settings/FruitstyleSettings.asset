@@ -16,9 +16,10 @@ MonoBehaviour:
   ItemScaleUpSpeed: 0.5
   PerfectMoveSizeCoef: 0.05
   PerfectMovePrewarmRequired: 2
+  WaveLength: 7
   VaweScaleDuration: 0.15
   VaweDelayStep: 0.2
-  LastItemMaxWaveScaleModifier: 1.4
-  LastItemFinalScaleModifier: 1.2
-  OtherItemMaxWaveScaleModifier: 1.3
-  OtherItemFinalScaleModifier: 1.15
+  LastItemMaxWaveScaleModifier: 0.4
+  LastItemFinalScaleModifier: 0.2
+  OtherItemMaxWaveScaleModifier: 0.3
+  OtherItemFinalScaleModifier: 0.15
