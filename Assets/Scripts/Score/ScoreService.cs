@@ -1,4 +1,9 @@
-﻿using System;
+﻿using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class ScoreService
 {
@@ -17,6 +22,7 @@ public class ScoreService
         _towerBuilderService = towerBuilderService;
 
         _gameService.OnGameStart += Reset;
+        _gameService.OnGameOver += PublishScore;
         _towerBuilderService.OnTowerItemPlaced += AddScore;
     }
 
@@ -34,6 +40,44 @@ public class ScoreService
 
         OnScoreConterChange?.Invoke(LastScore, false);
     }
+
+    private void PublishScore()
+    {
+        if (_gameService.IsAuthenticated)
+        {
+            Social.ReportScore(LastScore, Constants.TowerHeightLeaderboardID, (isSucces) => Debug.Log("GPGS ReportScore " + isSucces));//
+        }
+
+        GetLeaderbordData();//test
+    }
+
+    private void GetLeaderbordData()
+    {
+        PlayGamesPlatform.Instance.LoadScores(
+            Constants.TowerHeightLeaderboardID,
+            LeaderboardStart.PlayerCentered,
+            10,
+            LeaderboardCollection.Public,
+            LeaderboardTimeSpan.AllTime,
+            (data) =>
+            {
+                var mStatus = "Leaderboard data valid: " + data.Valid;
+                mStatus += "\n approx:" + data.ApproximateCount + " have " + data.Scores.Length;
+            });
+    }
+
+    //на старті гри отримати лідербор щоб дізнатись поточний рекорд по поінтах
+    //кешуєм поточний рекорд щоб візначати новий
+    //при закінченні гри посилається реквесть на лідерборд
+    //показується поточні бали і рекорд
+    //якшо у нас новий персональний рекорд то яскраво пишем шо рекорд
+    //виводимо в вікні результатів список результатів гравця та ближайших до нього місць
+    //це імиена, позиція, поінти
+
+    //get score
+    //Social.LoadScores(allTimeTopScoreLeaderboardID, (scores) => Debug.LogError("ReportScore " + scores.Rank));
+    //Social.ShowLeaderboardUI();
+
 
     //hi score ever
     //hi score day
