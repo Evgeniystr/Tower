@@ -285,22 +285,27 @@ namespace GooglePlayGames.BasicApi
       void ShowLeaderboardUI(string leaderboardId, LeaderboardTimeSpan span,
                              Action<UIStatus> callback);
 
-      /// <summary>
-      /// Loads the score data for the given leaderboard.
-      /// </summary>
-      /// <param name="leaderboardId">Leaderboard identifier.</param>
-      /// <param name="start">Start indicating the top scores or player centric</param>
-      /// <param name="rowCount">max number of scores to return. non-positive indicates
-      /// no rows should be returned.  This causes only the summary info to
-      /// be loaded. This can be limited
-      /// by the SDK.</param>
-      /// <param name="collection">leaderboard collection: public or social</param>
-      /// <param name="timeSpan">leaderboard timespan</param>
-      /// <param name="callback">callback with the scores, and a page token.
-      ///   The token can be used to load next/prev pages.</param>
-      void LoadScores(string leaderboardId, LeaderboardStart start, int rowCount,
+        /// <summary>
+        /// Loads the score data for the given leaderboard.
+        /// </summary>
+        /// <param name="leaderboardId">Leaderboard identifier.</param>
+        /// <param name="start">Start indicating the top scores or player centric</param>
+        /// <param name="rowCount">max number of scores to return. non-positive indicates
+        /// no rows should be returned.  This causes only the summary info to
+        /// be loaded. This can be limited
+        /// by the SDK.</param>
+        /// <param name="collection">leaderboard collection: public or social</param>
+        /// <param name="timeSpan">leaderboard timespan</param>
+        /// <param name="callback">callback with the scores, and a page token.
+        ///   The token can be used to load next/prev pages.</param>
+        /// <param name="forceReload">
+        /// If true, this call will clear any locally cached data and attempt to
+        /// fetch the latest data from the server. This would commonly be used for something like a
+        /// user-initiated refresh. Normally, this should be set to {@code false} to gain advantages
+        /// of data caching.</param>
+        void LoadScores(string leaderboardId, LeaderboardStart start, int rowCount,
                       LeaderboardCollection collection, LeaderboardTimeSpan timeSpan,
-                      Action<LeaderboardScoreData> callback);
+                      Action<LeaderboardScoreData> callback, bool forceReload = false);
 
       /// <summary>
       /// Loads the more scores for the leaderboard.

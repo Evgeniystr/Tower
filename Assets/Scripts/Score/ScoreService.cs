@@ -42,11 +42,8 @@ public class ScoreService
     {
         if (_gameService.IsAuthenticated)
         {
-            Debug.Log($"[ScoreService] Try publish {ScoreCounter} points");
             Social.ReportScore(ScoreCounter, Constants.TowerHeightLeaderboardID, (isSucces) => 
             {
-                Debug.Log($"[ScoreService] GPGS PublishScore is succes: {isSucces}");
-
                 if (isSucces)
                 {
                     Social.ShowLeaderboardUI();
@@ -76,6 +73,7 @@ public class ScoreService
             (data) =>
             {
                 OnLeaderboardDataRecive?.Invoke(data);
-            });
+            },
+            true);
     }
 }

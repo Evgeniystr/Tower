@@ -82,21 +82,12 @@ public class ScoreResultPopUpView : MonoBehaviour
 
     public void ShowSocialScores(LeaderboardScoreData leaderboardData)
     {
-        Debug.Log($"LeaderboardScoreData STATUS {leaderboardData.Status}");//
-
         if (!leaderboardData.Valid)
             throw new Exception($"[ScoreResultPopUpView] Leaderboard recived status: {leaderboardData.Status}");
 
-        Debug.Log($"LeaderboardScoreData STATUS {leaderboardData.Status}");//
         _privateRecordGO.SetActive(_scoreService.ScoreCounter == leaderboardData.PlayerScore.value);
-        Debug.Log($"LeaderboardScoreData ScoreCounter {_scoreService.ScoreCounter}");//
-        Debug.Log($"LeaderboardScoreData PlayerScore {leaderboardData.PlayerScore.value}");//
-        Debug.Log($"LeaderboardScoreData leaderboard entries count {leaderboardData.Scores.Length}");//
         foreach (var scoreItem in leaderboardData.Scores)
         {
-            Debug.Log($"LeaderboardScoreData rank value userid {scoreItem.rank} {scoreItem.value} {scoreItem.userID}");//
-            Debug.Log("-----");//
-
             var itemView = _leadenboardEntriesPool.Get();
             itemView.Setup(scoreItem.rank, scoreItem.value, scoreItem.userID);
             _spawnedScoreItems.Add(itemView);
