@@ -89,7 +89,7 @@ public class ScoreResultPopUpView : MonoBehaviour
         foreach (var scoreItem in leaderboardData.Scores)
         {
             var itemView = _leadenboardEntriesPool.Get();
-            itemView.Setup(scoreItem.rank, scoreItem.value, scoreItem.userID);
+            itemView.Setup(scoreItem.rank, scoreItem.value, _scoreService.UserNames[scoreItem.userID]);
             _spawnedScoreItems.Add(itemView);
         }
     }

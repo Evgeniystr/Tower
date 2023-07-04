@@ -1,6 +1,7 @@
 ﻿using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ScoreService
@@ -12,6 +13,7 @@ public class ScoreService
     private TowerBuilderService _towerBuilderService;
 
     public long ScoreCounter { private set; get; }
+    public Dictionary<string, string> UserNames { private set; get; }//iserID UserName
 
     private ScoreService (GameService gameService, TowerBuilderService towerBuilderService)
     {
@@ -21,6 +23,8 @@ public class ScoreService
         _gameService.OnGameStart += Reset;
         _gameService.OnGameOver += PublishScore;
         _towerBuilderService.OnTowerItemPlaced += AddScore;
+
+        UserNames = new Dictionary<string, string> ();
     }
 
 
@@ -45,10 +49,7 @@ public class ScoreService
             Social.ReportScore(ScoreCounter, Constants.TowerHeightLeaderboardID, (isSucces) => 
             {
                 if (isSucces)
-                {
-                    Social.ShowLeaderboardUI();
                     GetLeaderbordData();
-                }
                 else
                     throw new Exception($"[ScoreService] GPGS ReportScore: {isSucces}");
             });
@@ -72,8 +73,34 @@ public class ScoreService
             LeaderboardTimeSpan.AllTime,
             (data) =>
             {
-                OnLeaderboardDataRecive?.Invoke(data);
+                GetAndCatchUsernames(data);
             },
             true);
+    }
+
+    private void GetAndCatchUsernames(LeaderboardScoreData data)
+    {
+        var userIDsToRequest = new List<string>();
+
+        foreach (var scoreItem in data.Scores)
+        {
+            if(!UserNames.ContainsKey(scoreItem.userID))
+                userIDsToRequest.Add(scoreItem.userID);
+        }
+
+        if(userIDsToRequest.Count > 0)
+        {
+            Social.LoadUsers(userIDsToRequest.ToArray(), (users) =>
+            {
+                foreach (var userProfile in users)
+                    UserNames.Add(userProfile.id, userProfile.userName);
+
+                OnLeaderboardDataRecive?.Invoke(data);
+            });
+        }
+        else
+        {
+            OnLeaderboardDataRecive?.Invoke(data);
+        }
     }
 }
