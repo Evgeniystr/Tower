@@ -1,20 +1,17 @@
 ﻿using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 public class ScoreService
 {
-    public event Action<int, bool> OnScoreConterChange;
+    public event Action<long, bool> OnScoreConterChange;
+    public event Action<LeaderboardScoreData> OnLeaderboardDataRecive;
 
     private GameService _gameService;
     private TowerBuilderService _towerBuilderService;
 
-    public int LastScore { private set; get; }
-    public int HiScore { private set; get; }
-
+    public long ScoreCounter { private set; get; }
 
     private ScoreService (GameService gameService, TowerBuilderService towerBuilderService)
     {
@@ -29,29 +26,46 @@ public class ScoreService
 
     private void AddScore(bool isPerfect)
     {
-        LastScore++;
+        ScoreCounter++;
 
-        OnScoreConterChange?.Invoke(LastScore, isPerfect);
+        OnScoreConterChange?.Invoke(ScoreCounter, isPerfect);
     }
 
     public void Reset()
     {
-        LastScore = 0;
+        ScoreCounter = 0;
 
-        OnScoreConterChange?.Invoke(LastScore, false);
+        OnScoreConterChange?.Invoke(ScoreCounter, false);
     }
 
     private void PublishScore()
     {
         if (_gameService.IsAuthenticated)
         {
-            Social.ReportScore(LastScore, Constants.TowerHeightLeaderboardID, (isSucces) => Debug.Log("GPGS ReportScore " + isSucces));//
-        }
+            Debug.Log($"[ScoreService] Try publish {ScoreCounter} points");
+            Social.ReportScore(ScoreCounter, Constants.TowerHeightLeaderboardID, (isSucces) => 
+            {
+                Debug.Log($"[ScoreService] GPGS PublishScore is succes: {isSucces}");
 
-        GetLeaderbordData();//test
+                if (isSucces)
+                {
+                    Social.ShowLeaderboardUI();
+                    GetLeaderbordData();
+                }
+                else
+                    throw new Exception($"[ScoreService] GPGS ReportScore: {isSucces}");
+            });
+        }
+        else
+        {
+#if UNITY_EDITOR
+#elif PLATFORM_ANDROID
+        Debug.LogError("[ScoreService] GPGS NOT Authenticated while runing on Android device");
+#endif
+        }
     }
 
-    private void GetLeaderbordData()
+    public void GetLeaderbordData()
     {
         PlayGamesPlatform.Instance.LoadScores(
             Constants.TowerHeightLeaderboardID,
@@ -61,35 +75,7 @@ public class ScoreService
             LeaderboardTimeSpan.AllTime,
             (data) =>
             {
-                var mStatus = "Leaderboard data valid: " + data.Valid;
-                mStatus += "\n approx:" + data.ApproximateCount + " have " + data.Scores.Length;
+                OnLeaderboardDataRecive?.Invoke(data);
             });
     }
-
-    //на старті гри отримати лідербор щоб дізнатись поточний рекорд по поінтах
-    //кешуєм поточний рекорд щоб візначати новий
-    //при закінченні гри посилається реквесть на лідерборд
-    //показується поточні бали і рекорд
-    //якшо у нас новий персональний рекорд то яскраво пишем шо рекорд
-    //виводимо в вікні результатів список результатів гравця та ближайших до нього місць
-    //це імиена, позиція, поінти
-
-    //get score
-    //Social.LoadScores(allTimeTopScoreLeaderboardID, (scores) => Debug.LogError("ReportScore " + scores.Rank));
-    //Social.ShowLeaderboardUI();
-
-
-    //hi score ever
-    //hi score day
-    //hi score week
-
-    //perfect move percent
-    //hi perfect move percent ever/day/week
-
-    //also need count minimal fruit count fo eachachivment
-    //15% not bad, good
-    //30% nice, good
-    //50% perfect master
-    //70%+ maestro! grend bellissimo!
-    //90% godlike!!! unbelivable! incredible! immposible
 }

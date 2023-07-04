@@ -21,7 +21,7 @@ public class ScoreCounterView : MonoBehaviour
         _scoreService.OnScoreConterChange -= ShowScore;
     }
 
-    private void ShowScore(int value, bool isPerfect)
+    private void ShowScore(long value, bool isPerfect)
     {
         _counter.text = value.ToString();
 

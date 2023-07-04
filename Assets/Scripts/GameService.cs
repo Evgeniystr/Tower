@@ -30,13 +30,13 @@ public class GameService : MonoBehaviour
 #elif (UNITY_ANDROID)
         //PlayGamesPlatform.DebugLogEnabled = true;//
         PlayGamesPlatform.Activate();
-        PlayGamesPlatform.Instance.Authenticate(OnAuthenticateTryComplete);
+        PlayGamesPlatform.Instance.Authenticate(OnAuthenticateComplete);
 #else
         throw new Exception("Unrecognized platform");
 #endif
     }
 
-    private void OnAuthenticateTryComplete(SignInStatus status)
+    private void OnAuthenticateComplete(SignInStatus status)
     {
         if (status == SignInStatus.Success)
         {
