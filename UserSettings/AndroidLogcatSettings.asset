@@ -1,9 +1,9 @@
 {
     "m_SelectedDeviceId": "8f1b9bba",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "8f1b9bba",
+        "name": "com.AtomarFUN.FruitsTower",
+        "processId": 31836,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -37,6 +37,12 @@
             "name": "com.AtomarFUN.FruitsTower",
             "processId": 30130,
             "exited": true
+        },
+        {
+            "deviceId": "8f1b9bba",
+            "name": "com.AtomarFUN.FruitsTower",
+            "processId": 31836,
+            "exited": false
         }
     ],
     "m_Tags": {

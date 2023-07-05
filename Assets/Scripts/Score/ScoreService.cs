@@ -46,7 +46,7 @@ public class ScoreService
     {
         if (_gameService.IsAuthenticated)
         {
-            Social.ReportScore(ScoreCounter, Constants.TowerHeightLeaderboardID, (isSucces) => 
+            PlayGamesPlatform.Instance.ReportScore(ScoreCounter, Constants.TowerHeightLeaderboardID, (isSucces) => 
             {
                 if (isSucces)
                     GetLeaderbordData();
