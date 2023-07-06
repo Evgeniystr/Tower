@@ -15,6 +15,7 @@ public class TowerItem : MonoBehaviour
     public Transform Transform { get { return _transform; } }
     public MeshFilter MeshFilter { get { return _meshFilter; } }
     public float Size { get; private set; } = 1;
+    public string CurrentMatName { get; private set; }
 
     private TowerBuilderService _towerBuilderService;
     private FruitItemSettings _fruitItemSettings;
@@ -50,7 +51,7 @@ public class TowerItem : MonoBehaviour
         _failSize = previousItem.Size;
 
         //set material
-        SetRandomMaterial();
+        SetRandomMaterial(previousItem.CurrentMatName);
     }
 
     public void SetupAsBaseItem()
@@ -70,9 +71,10 @@ public class TowerItem : MonoBehaviour
         return perfectMoveTriggerValue;
     }
 
-    public void SetRandomMaterial()
+    public void SetRandomMaterial(string previousMatName)
     {
-        _meshRenderer.material = _fruitItemSettings.GetRandomMaterial();
+        _meshRenderer.material = _fruitItemSettings.GetRandomMaterial(previousMatName);
+        CurrentMatName = _meshRenderer.material.name;
     }
 
     public void SetActive(bool state)

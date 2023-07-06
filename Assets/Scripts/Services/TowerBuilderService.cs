@@ -87,7 +87,7 @@ public class TowerBuilderService
             _maxPerfectMoveTriggerValue = _towerBaseItem.GetPrefectMoveTriggerValue();
         }
 
-        _towerBaseItem.SetRandomMaterial();
+        _towerBaseItem.SetRandomMaterial(null);
     }
 
     public async void CleareTower()
