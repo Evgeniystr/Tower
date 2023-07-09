@@ -1,4 +1,3 @@
-using ModestTree;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "FruitItemSettings", menuName = "GameSettings/FruitItemSettings")]

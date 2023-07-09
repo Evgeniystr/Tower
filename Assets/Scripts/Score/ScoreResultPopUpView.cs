@@ -82,8 +82,14 @@ public class ScoreResultPopUpView : MonoBehaviour
 
     public void ShowSocialScores(LeaderboardScoreData leaderboardData)
     {
+        Debug.Log($"GPGS ShowSocialScores START");//
+
+
         if (!leaderboardData.Valid)
             throw new Exception($"[ScoreResultPopUpView] Leaderboard recived status: {leaderboardData.Status}");
+
+        Debug.Log($"GPGS ShowSocialScores. Items count: {leaderboardData.Scores.Length}");//
+
 
         _privateRecordGO.SetActive(_scoreService.ScoreCounter == leaderboardData.PlayerScore.value);
         foreach (var scoreItem in leaderboardData.Scores)

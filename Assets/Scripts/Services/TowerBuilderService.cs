@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using DG.Tweening;
 using System;
 using System.Linq;
 
@@ -15,7 +14,6 @@ public class TowerBuilderService
     private GameService _gameService;
     private PlayerInputService _playerInputService;
     private GameSettings _gameSettings;
-    private FruitItemSettings _fruitItemSettings;
     private TowerItem _towerBaseItem;
 
     private List<TowerItem> _allTowerElements;
@@ -47,7 +45,6 @@ public class TowerBuilderService
         _gameService = gameService;
         _playerInputService = playerInputService;
 
-        _fruitItemSettings = fruitItemSettings;
         _gameSettings = gameSettings;
 
         _gameService.OnStartupInitialize += Initialize;
@@ -92,31 +89,15 @@ public class TowerBuilderService
 
     public async void CleareTower()
     {
-        if (_allTowerElements.Count == 0)
-            return;
+        int clearePerSecond = 15;
+        int itemDelayMS = 1000 / clearePerSecond;
+        float scaleDownDuration = 0.15f;
 
-        var duration = 1f;
-        var curentDuration = duration;
-        int lastTowerItemIndex = 0;
-
-        while (curentDuration > 0)
+        for (int i = _allTowerElements.Count-1; i >= 0; i--)
         {
-            var t = Mathf.InverseLerp(0, duration, curentDuration);
-
-            var pointedItemIndex = (int)Mathf.Lerp(0, _allTowerElements.Count -1, t);
-
-            if(lastTowerItemIndex != pointedItemIndex)
-            {
-                var towerItem = _allTowerElements[pointedItemIndex];
-
-                //scale down
-                towerItem.FadeSizeToZero(0.1f, () => _fruitsPool.ReleaseItem(towerItem));
-                
-                lastTowerItemIndex = pointedItemIndex;
-            }
-
-            curentDuration -= Time.fixedDeltaTime;
-            await UniTask.WaitForFixedUpdate();
+            var towerItem = _allTowerElements[i];
+            towerItem.FadeSizeToZero(scaleDownDuration, () => _fruitsPool.ReleaseItem(towerItem));
+            await UniTask.Delay(itemDelayMS);
         }
     }
 
@@ -184,7 +165,7 @@ public class TowerBuilderService
         _audioService.DoPerfectSplatterSound();
 
         if(_perfectMoveCounter > _gameSettings.PerfectMovePrewarmRequired)
-            DePerfectMoveWave();
+            DoPerfectMoveWave();
     }
 
     private bool PerfectMoveCheck()
@@ -202,7 +183,7 @@ public class TowerBuilderService
         return isPerfectMove;
     }
 
-    private void DePerfectMoveWave()
+    private void DoPerfectMoveWave()
     {
         var elementsLastIndex = _allTowerElements.Count - 1;
 
@@ -241,7 +222,7 @@ public class TowerBuilderService
         //change lose material to red
         failedElement.SetLoseView();
 
-        await UniTask.Delay(1000);//time for look at losing item
+        await UniTask.Delay(500);//time for look at losing item
 
         _fruitsPool.ReleaseItem(failedElement);
         _allTowerElements.Remove(failedElement);

@@ -152,7 +152,7 @@ public class TowerItem : MonoBehaviour
         Size = 0;
 
         _transform.
-            DOScale(new Vector3(Size, _dafaultYscale, Size), duration).
+            DOScale(new Vector3(Size, _dafaultYscale, Size), duration).SetEase(Ease.InQuart).
             OnComplete(() => callback?.Invoke());
     }
 }
