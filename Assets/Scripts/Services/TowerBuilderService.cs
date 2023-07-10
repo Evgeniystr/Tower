@@ -19,7 +19,6 @@ public class TowerBuilderService
     private List<TowerItem> _allTowerElements;
     private TowerItem _currentTowerElement;
     private TowerItem _previousTowerElement;
-    private float _maxPerfectMoveTriggerValue;
 
     private bool _isInitialized;
 
@@ -68,21 +67,18 @@ public class TowerBuilderService
         _playerInputService.OnTapEvent += StartMakeNewFruit;
         _playerInputService.OnReleaseEvent += StopMakeNewFruit;
 
-        SetBaseItem();
         CleareTower();
+        SetBaseItem();
 
         _perfectMoveCounter = 0;
-        _previousTowerElement = null;
     }
 
     private void SetBaseItem()
     {
-        if(_towerBaseItem == null)
-        {
-            _towerBaseItem = _fruitsPool.Get();
-            _towerBaseItem.SetupAsBaseItem();
-            _maxPerfectMoveTriggerValue = _towerBaseItem.GetPrefectMoveTriggerValue();
-        }
+        _towerBaseItem = _fruitsPool.Get();
+        _towerBaseItem.SetupAsBaseItem();
+        _previousTowerElement = _towerBaseItem;
+        _allTowerElements.Add(_towerBaseItem);
 
         _towerBaseItem.SetRandomMaterial(null);
     }
@@ -99,6 +95,8 @@ public class TowerBuilderService
             towerItem.FadeSizeToZero(scaleDownDuration, () => _fruitsPool.ReleaseItem(towerItem));
             await UniTask.Delay(itemDelayMS);
         }
+
+        _allTowerElements.Clear();
     }
 
     private void OnGameEnd()
@@ -110,7 +108,7 @@ public class TowerBuilderService
     public TowerItem GetLastTowerItem()
     {
         return _allTowerElements.Count == 0 ?
-            _towerBaseItem :
+            _towerBaseItem:
             _allTowerElements.Last();
     }
 
@@ -118,7 +116,8 @@ public class TowerBuilderService
     {
         SetupCurrentElement();
 
-        _currentTowerElement.StartGrowing();
+        var speedMultiplier = Mathf.Clamp(_previousTowerElement.Size, 1, 2);
+        _currentTowerElement.StartGrowing(speedMultiplier);
     }
 
     private void SetupCurrentElement()
@@ -164,7 +163,7 @@ public class TowerBuilderService
 
         _audioService.DoPerfectSplatterSound();
 
-        if(_perfectMoveCounter > _gameSettings.PerfectMovePrewarmRequired)
+        if(_perfectMoveCounter > _gameSettings.PerfectMoveStreakRequired)
             DoPerfectMoveWave();
     }
 
@@ -172,12 +171,11 @@ public class TowerBuilderService
     {
         if (_previousTowerElement == null)
             return false;
-
+        
         var triggerValue = _previousTowerElement.GetPrefectMoveTriggerValue();
-        var resultPerfectBorder = MathF.Min(triggerValue, _maxPerfectMoveTriggerValue);
 
-        var isPerfectMove = 
-            _currentTowerElement.Size >= resultPerfectBorder && 
+        var isPerfectMove =
+            _currentTowerElement.Size > triggerValue &&
             _currentTowerElement.Size < _previousTowerElement.Size;
 
         return isPerfectMove;

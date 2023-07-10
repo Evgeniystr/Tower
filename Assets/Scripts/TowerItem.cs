@@ -64,9 +64,10 @@ public class TowerItem : MonoBehaviour
 
     public float GetPrefectMoveTriggerValue()
     {
-        var perfectMoveOffset = Size * _gameSettings.PerfectMoveSizeCoef;
+        //offset scaled by size
+        var offsetScaler = Mathf.Clamp(Size,1,2);
 
-        var perfectMoveTriggerValue = Size - perfectMoveOffset;
+        var perfectMoveTriggerValue = Size - _gameSettings._perfectMoveOffset / offsetScaler;
 
         return perfectMoveTriggerValue;
     }
@@ -82,13 +83,13 @@ public class TowerItem : MonoBehaviour
         gameObject.SetActive(state);
     }
 
-    public async void StartGrowing()
+    public async void StartGrowing(float speedMultiplier)
     {
         _isGrowing = true;
 
         while (_isGrowing)
         {
-            var growingValue = _gameSettings.ItemScaleUpSpeed * Time.fixedDeltaTime;
+            var growingValue = _gameSettings.ItemScaleUpSpeed * speedMultiplier * Time.fixedDeltaTime;
 
             Size += growingValue;
 
@@ -118,8 +119,8 @@ public class TowerItem : MonoBehaviour
             _gameSettings.LastItemFinalScaleModifier :
             _gameSettings.OtherItemFinalScaleModifier;
 
-        Size += Size * (finalScaleModifier * powerScale);
-        var maxWaveItemSize = Size + Size * (maxWaveScaleModifier * powerScale);
+        Size += (finalScaleModifier * powerScale) * Size;
+        var maxWaveItemSize = Size + (maxWaveScaleModifier * powerScale) * Size;
 
 
         Vector3 waveMaxScale = new Vector3(
