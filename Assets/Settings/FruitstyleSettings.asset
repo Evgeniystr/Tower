@@ -19,7 +19,7 @@ MonoBehaviour:
   WaveLength: 7
   VaweScaleDuration: 0.15
   VaweDelayStep: 0.2
-  LastItemMaxWaveScaleModifier: 0.4
-  LastItemFinalScaleModifier: 0.2
+  LastItemMaxWaveScaleModifier: 0.5
+  LastItemFinalScaleModifier: 0.25
   OtherItemMaxWaveScaleModifier: 0.3
   OtherItemFinalScaleModifier: 0.15
