@@ -14,6 +14,7 @@ public class TowerBuilderService
     private GameService _gameService;
     private PlayerInputService _playerInputService;
     private GameSettings _gameSettings;
+    private CameraSettings _cameraSettings;
     private TowerItem _towerBaseItem;
 
     private List<TowerItem> _allTowerElements;
@@ -35,7 +36,8 @@ public class TowerBuilderService
         GameService gameService, 
         PlayerInputService playerInputService,
         FruitItemSettings fruitItemSettings,
-        GameSettings gameSettings)
+        GameSettings gameSettings,
+        CameraSettings cameraSettings)
     {
         _fruitsPool = new FruitsPool(fruitPrefab, towerParent, this, fruitItemSettings, gameSettings);
 
@@ -45,6 +47,7 @@ public class TowerBuilderService
         _playerInputService = playerInputService;
 
         _gameSettings = gameSettings;
+        _cameraSettings = cameraSettings;
 
         _gameService.OnStartupInitialize += Initialize;
     }
@@ -62,38 +65,44 @@ public class TowerBuilderService
         _isInitialized = true;
     }
 
-    private void OnGameStart()
+    private async void OnGameStart()
     {
-        _playerInputService.OnTapEvent += StartMakeNewFruit;
-        _playerInputService.OnReleaseEvent += StopMakeNewFruit;
-
-        CleareTower();
-        SetBaseItem();
+        await CleareTower();
+        await SetBaseItem();
 
         _perfectMoveCounter = 0;
+
+        _playerInputService.OnTapEvent += StartMakeNewFruit;
+        _playerInputService.OnReleaseEvent += StopMakeNewFruit;
     }
 
-    private void SetBaseItem()
+    private async UniTask SetBaseItem()
     {
         _towerBaseItem = _fruitsPool.Get();
-        _towerBaseItem.SetupAsBaseItem();
+        await _towerBaseItem.SetupAsBaseItem();
         _previousTowerElement = _towerBaseItem;
         _allTowerElements.Add(_towerBaseItem);
-
-        _towerBaseItem.SetRandomMaterial(null);
     }
 
-    public async void CleareTower()
+    public async UniTask CleareTower()
     {
-        int clearePerSecond = 15;
-        int itemDelayMS = 1000 / clearePerSecond;
+        if (_allTowerElements.Count == 0)
+            return;
+
+        int timePerItemMS = (int)(_cameraSettings.CamFailAnimDuration / 2) * 1000 / _allTowerElements.Count;
+
+        int defaultItemsPerSecond = 15;
+        int defaultItemDelayMS = 1000 / defaultItemsPerSecond;
+
+        int resultItemDelayMS = Mathf.Min(timePerItemMS, defaultItemDelayMS);
+
         float scaleDownDuration = 0.15f;
 
         for (int i = _allTowerElements.Count-1; i >= 0; i--)
         {
             var towerItem = _allTowerElements[i];
             towerItem.FadeSizeToZero(scaleDownDuration, () => _fruitsPool.ReleaseItem(towerItem));
-            await UniTask.Delay(itemDelayMS);
+            await UniTask.Delay(resultItemDelayMS);
         }
 
         _allTowerElements.Clear();

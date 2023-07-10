@@ -25,6 +25,8 @@ public class TowerItem : MonoBehaviour
     private bool _isGrowing;
     private float _failSize;
 
+    private const float _baseItemFallDuration = 0.4f;
+
     public void Initialize(TowerBuilderService towerBuilderService, FruitItemSettings fruitItemSettings, GameSettings gameSettings)
     {
         _towerBuilderService = towerBuilderService;
@@ -54,12 +56,16 @@ public class TowerItem : MonoBehaviour
         SetRandomMaterial(previousItem.CurrentMatName);
     }
 
-    public void SetupAsBaseItem()
+    public async UniTask SetupAsBaseItem()
     {
+        SetRandomMaterial(null);
+
         Size = 1;
 
         _transform.localScale = new Vector3(Size, _dafaultYscale, Size);
-        _transform.position = Vector3.zero;
+        _transform.position = Vector3.up;
+
+        await _transform.DOMove(Vector3.zero, _baseItemFallDuration);
     }
 
     public float GetPrefectMoveTriggerValue()
@@ -110,7 +116,7 @@ public class TowerItem : MonoBehaviour
         _isGrowing = false;
     }
 
-    public void DoWave(float startDelay, bool isTopItem, float powerScale = 1)
+    public void DoWave(float startDelay, bool isTopItem, float powerScale)
     {
         var maxWaveScaleModifier = isTopItem ?
             _gameSettings.LastItemMaxWaveScaleModifier :
@@ -119,8 +125,9 @@ public class TowerItem : MonoBehaviour
             _gameSettings.LastItemFinalScaleModifier :
             _gameSettings.OtherItemFinalScaleModifier;
 
-        Size += (finalScaleModifier * powerScale) * Size;
-        var maxWaveItemSize = Size + (maxWaveScaleModifier * powerScale) * Size;
+        var adaptiveMultiplierBounded = Mathf.Clamp(Size, 0.5f, 1.5f);
+        Size += (finalScaleModifier * powerScale) * adaptiveMultiplierBounded;
+        var maxWaveItemSize = Size + (maxWaveScaleModifier * powerScale) * adaptiveMultiplierBounded;
 
 
         Vector3 waveMaxScale = new Vector3(

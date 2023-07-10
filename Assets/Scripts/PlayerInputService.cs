@@ -14,10 +14,10 @@ public class PlayerInputService : MonoBehaviour
         if (IsInputActive)
         {
             if(Input.GetMouseButtonDown(0))
-                OnTapEvent();
+                OnTapEvent?.Invoke();
             
             if(Input.GetMouseButtonUp(0))
-                OnReleaseEvent();
+                OnReleaseEvent?.Invoke();
         }
     }
 
