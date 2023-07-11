@@ -1,5 +1,4 @@
-﻿using GooglePlayGames;
-using GooglePlayGames.BasicApi;
+﻿using GooglePlayGames.BasicApi;
 using System;
 using UnityEngine;
 using Zenject;
@@ -22,7 +21,7 @@ public class GameService : MonoBehaviour
     }
 
 
-    private void Initialize()
+    public void Initialize()
     {
 #if (UNITY_EDITOR)
         OnStartupInitialize?.Invoke();
