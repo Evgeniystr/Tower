@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FruitstyleSettings
   m_EditorClassIdentifier: 
   MaxTowerItemScale: 2.2
-  ItemScaleUpSpeed: 0.8
+  ItemScaleUpSpeed: 0.7
   _perfectMoveOffset: 0.06
   PerfectMoveStreakRequired: 2
   WaveLength: 7

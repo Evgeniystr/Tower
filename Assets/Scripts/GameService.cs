@@ -15,12 +15,6 @@ public class GameService : MonoBehaviour
     private PlayerInputService _playerInputService;
 
 
-    private void Start()
-    {
-        Initialize();
-    }
-
-
     public void Initialize()
     {
 #if (UNITY_EDITOR)

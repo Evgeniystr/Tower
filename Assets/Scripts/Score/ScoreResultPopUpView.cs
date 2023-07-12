@@ -85,12 +85,13 @@ public class ScoreResultPopUpView : MonoBehaviour
         if (!leaderboardData.Valid)
             throw new Exception($"[ScoreResultPopUpView] Leaderboard recived status: {leaderboardData.Status}");
 
-
         _privateRecordGO.SetActive(_scoreService.ScoreCounter == leaderboardData.PlayerScore.value);
         foreach (var scoreItem in leaderboardData.Scores)
         {
             var itemView = _leadenboardEntriesPool.Get();
-            itemView.Setup(scoreItem.rank, scoreItem.value, _scoreService.UserNames[scoreItem.userID]);
+            var userName = _scoreService.UserNames[scoreItem.userID];
+            var currentUsrScoreEntry = _scoreService.PlayerName == userName;
+            itemView.Setup(scoreItem.rank, scoreItem.value, userName, currentUsrScoreEntry);
             _spawnedScoreItems.Add(itemView);
         }
     }

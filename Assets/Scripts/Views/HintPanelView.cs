@@ -1,27 +1,29 @@
 using UnityEngine;
+using UnityEngine.UI;
+using Zenject;
 
 public class HintPanelView : MonoBehaviour
 {
     [SerializeField]
     private GameObject _viewport;
     [SerializeField]
-    private InteractableTrigger _trigger;
+    private Button _button;
 
+    [Inject]
+    private GameService _gameService;
 
     void Start()
     {
-        _trigger.OnPointerDownEvent += HideHint;
+        _button.onClick.AddListener(HideHint);
+        _button.onClick.AddListener(_gameService.Initialize);
 
         ShowHint();
     }
 
-    private void OnDestroy()
-    {
-        _trigger.OnPointerDownEvent -= HideHint;
-    }
-
     public void HideHint()
     {
+        _button.onClick.RemoveAllListeners();
+
         _viewport.SetActive(false);
     }
 

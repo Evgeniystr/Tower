@@ -9,16 +9,22 @@ public class SplashView : MonoBehaviour
     [SerializeField]
     private Animation _animationComponent;
     [SerializeField]
+    private Image _backgroundShadow;
+    [SerializeField]
     private Image _background;
+    [SerializeField]
+    private TextMeshProUGUI _textShadow;
     [SerializeField]
     private TextMeshProUGUI _text;
 
 
     private SplashSettings _splashSettings;
+    private Color _shadowColorShift;
 
     public void Initialize(SplashSettings splashSettings)
     {
         _splashSettings = splashSettings;
+        _shadowColorShift = new Color(30, 30, 30, 30);
     }
 
     public async void SetAndPlay(Vector3 position, Action animEndCallback)
@@ -29,8 +35,12 @@ public class SplashView : MonoBehaviour
 
         _background.sprite = _splashSettings.GetRandomBackground();
         _background.color = colors.bgColor;
+        _backgroundShadow.color = colors.bgColor - _shadowColorShift;
 
-        _text.text = _splashSettings.GetRandomPhrase();
+        var phraseText = _splashSettings.GetRandomPhrase();
+        _textShadow.text = phraseText;
+        _text.text = phraseText;
+        _textShadow.color = colors.textColor - _shadowColorShift;
         _text.color = colors.textColor;
 
         _animationComponent.clip = _splashSettings.GetRandomAnimation();

@@ -14,6 +14,7 @@ public class ScoreService
 
     public long ScoreCounter { private set; get; }
     public Dictionary<string, string> UserNames { private set; get; }//iserID UserName
+    public string PlayerName { private set; get; }
 
     private ScoreService (GameService gameService, TowerBuilderService towerBuilderService)
     {
@@ -73,6 +74,14 @@ public class ScoreService
             LeaderboardTimeSpan.AllTime,
             (data) =>
             {
+                if (string.IsNullOrEmpty(PlayerName))
+                {
+                    Social.LoadUsers(new string[] { data.PlayerScore.userID }, (users) =>
+                    {
+                        PlayerName = users[0].userName;
+                    });
+                }
+
                 GetAndCatchUsernames(data);
             },
             true);
