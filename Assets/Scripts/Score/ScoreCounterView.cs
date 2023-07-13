@@ -2,6 +2,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using Zenject;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class ScoreCounterView : MonoBehaviour
 {
@@ -10,10 +11,17 @@ public class ScoreCounterView : MonoBehaviour
 
     [Inject]
     private ScoreService _scoreService;
+    [Inject]
+    private GameService _gameService;
+
 
     void Start()
     {
+        _counter.enabled = false;
+
         _scoreService.OnScoreConterChange += ShowScore;
+
+        _gameService.OnStartupInitialize += () => _counter.enabled = true;
     }
 
     private void OnDestroy()

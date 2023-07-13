@@ -22,6 +22,7 @@ public class TowerBuilderService
     private TowerItem _previousTowerElement;
 
     private bool _isInitialized;
+    private bool _fruitGrowthInProgress;
 
     private FruitsPool _fruitsPool;
 
@@ -123,6 +124,11 @@ public class TowerBuilderService
 
     private void StartMakeNewFruit()
     {
+        if (_fruitGrowthInProgress)
+            return;
+
+        _fruitGrowthInProgress = true;
+
         SetupCurrentElement();
 
         var speedMultiplier = Mathf.Clamp(_previousTowerElement.Size, 1, 2);
@@ -139,6 +145,10 @@ public class TowerBuilderService
 
     private void StopMakeNewFruit()
     {
+        if (!_fruitGrowthInProgress)
+            return;
+        _fruitGrowthInProgress = false;
+
         if (_currentTowerElement == null)
             return;
 

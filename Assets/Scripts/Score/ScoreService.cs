@@ -16,6 +16,7 @@ public class ScoreService
     public Dictionary<string, string> UserNames { private set; get; }//iserID UserName
     public string PlayerName { private set; get; }
 
+
     private ScoreService (GameService gameService, TowerBuilderService towerBuilderService)
     {
         _gameService = gameService;

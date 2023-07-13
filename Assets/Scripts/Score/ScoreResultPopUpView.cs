@@ -14,8 +14,6 @@ public class ScoreResultPopUpView : MonoBehaviour
     [Inject]
     private CameraService _cameraService;
     [Inject]
-    private TowerBuilderService _towerBuilderService;
-    [Inject]
     private GameService _gameService;
 
     [SerializeField]
