@@ -147,6 +147,7 @@ public class TowerBuilderService
     {
         if (!_fruitGrowthInProgress)
             return;
+
         _fruitGrowthInProgress = false;
 
         if (_currentTowerElement == null)
@@ -224,6 +225,8 @@ public class TowerBuilderService
 
     public void Lose()
     {
+        _fruitGrowthInProgress = false;
+
         _currentTowerElement.StopGrowing();
 
         _playerInputService.SetInputActive(false);
