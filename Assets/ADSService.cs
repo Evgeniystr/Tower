@@ -6,16 +6,16 @@ using UnityEngine;
 
 public class ADSService : MonoBehaviour
 {
-    void Start()
-    {
-        // Initialize the Google Mobile Ads SDK.
-        MobileAds.Initialize((InitializationStatus initStatus) =>
-        {
-            // This callback is called once the MobileAds SDK is initialized.
-            LoadRewardedAd();
-            ShowRewardedAd();
-        });
-    }
+    //void Start()
+    //{
+    //    // Initialize the Google Mobile Ads SDK.
+    //    MobileAds.Initialize((InitializationStatus initStatus) =>
+    //    {
+    //        // This callback is called once the MobileAds SDK is initialized.
+    //        LoadRewardedAd();
+    //        ShowRewardedAd();
+    //    });
+    //}
 
     // These ad units are configured to always serve test ads.
 #if UNITY_ANDROID
