@@ -46,6 +46,8 @@ public class ScoreService
 
     private void PublishScore()
     {
+        Debug.Log($"[ScoreService] GPGS Authenticate status: {_gameService.IsAuthenticated}");
+
         if (_gameService.IsAuthenticated)
         {
             PlayGamesPlatform.Instance.ReportScore(ScoreCounter, Constants.TowerHeightLeaderboardID, (isSucces) => 

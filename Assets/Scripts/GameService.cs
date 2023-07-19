@@ -17,8 +17,6 @@ public class GameService : MonoBehaviour
     [Inject]
     private PlayerInputService _playerInputService;
 
-    private bool _GPGSInited;
-
 
     public void Initialize()
     {
@@ -29,14 +27,18 @@ public class GameService : MonoBehaviour
         //GPGS
         //PlayGamesPlatform.DebugLogEnabled = true;//
 
-        OnStartupInitialize?.Invoke();
-        StartGame();
+        PlayGamesPlatform.Activate();
+        PlayGamesPlatform.Instance.Authenticate(status => {
+            
+            Debug.Log($"[GameService] GPGS Authenticate status: {status}");
 
-        //PlayGamesPlatform.Activate();
-        //PlayGamesPlatform.Instance.Authenticate(status => {
-        //    OnStartupInitialize?.Invoke();
-        //    StartGame();
-        //});
+            if(status == SignInStatus.Success)
+            {
+                IsAuthenticated = true;
+                OnStartupInitialize?.Invoke();
+                StartGame();
+            }
+        });
 
 #else
         throw new Exception("[GameService] Unexpected platform");

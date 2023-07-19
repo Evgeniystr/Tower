@@ -30,6 +30,8 @@ public class GameInstaller : MonoInstaller
     [SerializeField]
     private PlayerInputService _playerInputService;
     [SerializeField]
+    private ADSService _adService;
+    [SerializeField]
     private GameService _gameService;
 
 
@@ -49,6 +51,7 @@ public class GameInstaller : MonoInstaller
 
         Container.Bind<AudioService>().FromInstance(_audioService).AsSingle();
         Container.Bind<PlayerInputService>().FromInstance(_playerInputService).AsSingle();
+        Container.Bind<ADSService>().FromInstance(_adService).AsSingle();
         Container.Bind<GameService>().FromInstance(_gameService).AsSingle();
         Container.Bind<SplashService>().AsSingle();
         Container.Bind<TowerBuilderService>().AsSingle();

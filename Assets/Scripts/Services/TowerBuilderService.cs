@@ -8,11 +8,13 @@ using System.Linq;
 public class TowerBuilderService
 {
     public event Action<bool> OnTowerItemPlaced;//bool - isPerfect
+    public event Action OnSecondChancePropoposal;
 
     private SplashService _splashService;
     private AudioService _audioService;
     private GameService _gameService;
     private PlayerInputService _playerInputService;
+    private ADSService _adService;
     private GameSettings _gameSettings;
     private CameraSettings _cameraSettings;
     private TowerItem _towerBaseItem;
@@ -28,14 +30,20 @@ public class TowerBuilderService
 
     private int _perfectMoveCounter;
 
+    //continue after falling
+    private const float _minTowerSizeForSecondChance = 0.5f;
+    public const int AdPerTowerLevel = 10;
+    public int UsedAdCounter { get; private set; }
+
 
     public TowerBuilderService(
         [Inject(Id = Constants.TowerParent)] Transform towerParent,
         TowerItem fruitPrefab,
         SplashService splashService,
-        AudioService audioService, 
-        GameService gameService, 
+        AudioService audioService,
+        GameService gameService,
         PlayerInputService playerInputService,
+        ADSService adService,
         FruitItemSettings fruitItemSettings,
         GameSettings gameSettings,
         CameraSettings cameraSettings)
@@ -46,6 +54,7 @@ public class TowerBuilderService
         _audioService = audioService;
         _gameService = gameService;
         _playerInputService = playerInputService;
+        _adService = adService;
 
         _gameSettings = gameSettings;
         _cameraSettings = cameraSettings;
@@ -62,6 +71,7 @@ public class TowerBuilderService
 
         _gameService.OnGameStart += OnGameStart;
         _gameService.OnGameOver += OnGameEnd;
+        _adService.OnRewardRecived += (type, amount) => TakeSecondChance();
 
         _isInitialized = true;
     }
@@ -71,6 +81,7 @@ public class TowerBuilderService
         await CleareTower();
         await SetBaseItem();
 
+        UsedAdCounter = 0;
         _perfectMoveCounter = 0;
 
         _playerInputService.OnTapEvent += StartMakeNewFruit;
@@ -223,7 +234,7 @@ public class TowerBuilderService
         }
     }
 
-    public void Lose()
+    public async UniTaskVoid Lose()
     {
         _fruitGrowthInProgress = false;
 
@@ -231,13 +242,25 @@ public class TowerBuilderService
 
         _playerInputService.SetInputActive(false);
 
-        DestroyLoseElement();
+
+        await DestroyLoseElement();
+
+
+        if (CanTakeSecondChanceCheck())
+            OnSecondChancePropoposal?.Invoke();
+        else
+            _gameService.GameOver();
     }
 
-    private async UniTaskVoid DestroyLoseElement()
+    public void TakeSecondChance()
+    {
+        UsedAdCounter++;
+        _playerInputService.SetInputActive(true);
+    }
+
+    private async UniTask DestroyLoseElement()
     {
         var failedElement = _currentTowerElement;
-        _currentTowerElement = null;
 
         //change lose material to red
         failedElement.SetLoseView();
@@ -247,6 +270,18 @@ public class TowerBuilderService
         _fruitsPool.ReleaseItem(failedElement);
         _allTowerElements.Remove(failedElement);
 
-        _gameService.GameOver();
+        _currentTowerElement = _allTowerElements.Last();
+    }
+
+    private bool CanTakeSecondChanceCheck()
+    {
+        var towerLevel = _allTowerElements.Count - 1; //substract base level
+        var chansesForCurrentLevel = towerLevel / AdPerTowerLevel;
+        var isCanTakeChance = 
+            UsedAdCounter < chansesForCurrentLevel && //is has unused chances
+            towerLevel >= AdPerTowerLevel && //is tower meet minimal height
+            _currentTowerElement.Size > _minTowerSizeForSecondChance; //is current element large enought for new chance
+
+        return isCanTakeChance;
     }
 }
