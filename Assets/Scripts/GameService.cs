@@ -17,33 +17,46 @@ public class GameService : MonoBehaviour
     [Inject]
     private PlayerInputService _playerInputService;
 
-
-    public void Initialize()
+    private void Start()
     {
-#if (UNITY_EDITOR)
+        Initialize();
+    }
+
+    private void Initialize()
+    {
         OnStartupInitialize?.Invoke();
-        StartGame();
+
+#if (UNITY_EDITOR)
 #elif (UNITY_ANDROID)
         //GPGS
         //PlayGamesPlatform.DebugLogEnabled = true;//
 
         PlayGamesPlatform.Activate();
-        PlayGamesPlatform.Instance.Authenticate(status => {
-            
+        PlayGamesPlatform.Instance.Authenticate(status => 
+        {
             Debug.Log($"[GameService] GPGS Authenticate status: {status}");
 
-            if(status == SignInStatus.Success)
-            {
+            if (status == SignInStatus.Success)
                 IsAuthenticated = true;
-                OnStartupInitialize?.Invoke();
-                StartGame();
-            }
         });
 
 #else
         throw new Exception("[GameService] Unexpected platform");
 #endif
     }
+
+    public async UniTaskVoid FirstGameStart()
+    {
+#if (UNITY_EDITOR)
+        StartGame();
+#elif (UNITY_ANDROID)
+        if (!IsAuthenticated)
+            await UniTask.WaitUntil(() => IsAuthenticated);
+
+        StartGame();
+#endif
+    }
+
 
     public void StartGame()
     {

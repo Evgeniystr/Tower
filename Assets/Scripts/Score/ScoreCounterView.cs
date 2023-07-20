@@ -20,7 +20,7 @@ public class ScoreCounterView : MonoBehaviour
 
         _scoreService.OnScoreConterChange += ShowScore;
 
-        _gameService.OnStartupInitialize += () => _counter.enabled = true;
+        _gameService.OnGameStart += () => _counter.enabled = true;
     }
 
     private void OnDestroy()
