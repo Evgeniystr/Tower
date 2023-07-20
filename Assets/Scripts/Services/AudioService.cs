@@ -19,6 +19,10 @@ public class AudioService : MonoBehaviour
 
     private void Start()
     {
+        //recover sound settings
+        SetMasterVolume(PlayerPrefs.GetFloat(Constants.VolumePrefsKey));
+        SetMute(PlayerPrefs.GetInt(Constants.IsMutePrefsKey)==1);
+
         _themeAudioSource.clip = _soundSettings.mainTheme;
         _themeAudioSource.loop = true;
         _themeAudioSource.Play();
@@ -70,5 +74,17 @@ public class AudioService : MonoBehaviour
         _splatterAudioSource.volume = resultVolume;
 
         OnVolumeChange?.Invoke();
+    }
+
+    private void OnDestroy()
+    {
+        PlayerPrefs.SetFloat(Constants.VolumePrefsKey, Volume);
+        PlayerPrefs.SetInt(Constants.IsMutePrefsKey, IsMuted?1:0);
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetFloat(Constants.VolumePrefsKey, Volume);
+        PlayerPrefs.SetInt(Constants.IsMutePrefsKey, IsMuted ? 1 : 0);
     }
 }

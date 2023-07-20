@@ -53,7 +53,7 @@ public class MenuView : MonoBehaviour
     [Inject]
     private PlayerInputService _playerInputService;
 
-    void Start()
+    void Awake()
     {
         Initialize();
         HidePanel();
@@ -113,6 +113,7 @@ public class MenuView : MonoBehaviour
             _sliderFill.color = _sliderFillActive;
         }
 
+        _soundSlider.SetValueWithoutNotify(_audioService.Volume);
         _soundSlider.interactable = !_audioService.IsMuted;
     }
 }

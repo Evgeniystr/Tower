@@ -31,8 +31,9 @@ public class TowerBuilderService
     private int _perfectMoveCounter;
 
     //continue after falling
-    private const float _minTowerSizeForSecondChance = 0.5f;
-    public const int AdPerTowerLevel = 10;
+    //private const float _minTowerSizeForSecondChance = 0.5f;
+    private const int _minTowerHeight = 5;
+    public const int AdPerTowerLevel = 3;
     public int UsedAdCounter { get; private set; }
 
 
@@ -277,10 +278,9 @@ public class TowerBuilderService
     {
         var towerLevel = _allTowerElements.Count - 1; //substract base level
         var chansesForCurrentLevel = towerLevel / AdPerTowerLevel;
-        var isCanTakeChance = 
+        var isCanTakeChance =
             UsedAdCounter < chansesForCurrentLevel && //is has unused chances
-            towerLevel >= AdPerTowerLevel && //is tower meet minimal height
-            _currentTowerElement.Size > _minTowerSizeForSecondChance; //is current element large enought for new chance
+            towerLevel >= _minTowerHeight; //is tower meet minimal height
 
         return isCanTakeChance;
     }

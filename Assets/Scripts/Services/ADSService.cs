@@ -60,18 +60,22 @@ public class ADSService : MonoBehaviour
             });
     }
 
+    public bool RewardReadyCheck()
+    {
+        return rewardedAd != null && rewardedAd.CanShowAd();
+    }
+
     public void ShowRewardedAd()
     {
         const string rewardMsg =
             "Rewarded ad rewarded the user. Type: {0}, amount: {1}.";
 
-        if (rewardedAd != null && rewardedAd.CanShowAd())
+        if (RewardReadyCheck())
         {
             rewardedAd.Show((Reward reward) =>
             {
                 //TODO give reward
                 OnRewardRecived?.Invoke(reward.Type, reward.Amount);
-                UnregisterEventHandlers(rewardedAd);
                 Debug.Log(String.Format(rewardMsg, reward.Type, reward.Amount));
             });
         }
@@ -138,6 +142,7 @@ public class ADSService : MonoBehaviour
     {
         Debug.Log("Rewarded ad full screen content closed.");
         // Clean up the old ad before loading a new one.
+        UnregisterEventHandlers(rewardedAd);
         rewardedAd.Destroy();
         rewardedAd = null;
 

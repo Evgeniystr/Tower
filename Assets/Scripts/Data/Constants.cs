@@ -9,4 +9,7 @@ public class Constants
 
     //Google play game socials
     public const string TowerHeightLeaderboardID = "CgkIgd20yroDEAIQAQ";
+
+    public const string VolumePrefsKey = "Volume";
+    public const string IsMutePrefsKey = "Mute";
 }
