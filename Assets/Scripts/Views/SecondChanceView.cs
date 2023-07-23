@@ -1,4 +1,5 @@
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -10,11 +11,9 @@ public class SecondChanceView : MonoBehaviour
     [SerializeField]
     private Button _yesButton;
     [SerializeField]
-    private Button _noButton;
+    private Image _progressBar;
     [SerializeField]
-    private Text _notReadyText;
-    [SerializeField]
-    private Color _notReadyColor;
+    private TMP_Text _continueText;
 
     [Inject]
     private ADSService _adService;
@@ -23,26 +22,32 @@ public class SecondChanceView : MonoBehaviour
     [Inject]
     private TowerBuilderService _towerBuilderService;
 
+    private Sequence _popupSequence;
+    private float _chanceTimerDuration = 4f;
 
-    private Sequence _fadeOut;
-    private Color _notReadyTranspatentColor;
+    private Tween _continurTextPolsing;
+
+
 
     void Start()
     {
         _towerBuilderService.OnSecondChancePropoposal += ShowPopup;
 
         _yesButton.onClick.AddListener(Contirm);
-        _noButton.onClick.AddListener(Decline);
-
-        _notReadyTranspatentColor = new Color(_notReadyColor.r, _notReadyColor.g, _notReadyColor.b, 0);
-        _notReadyText.color = _notReadyTranspatentColor;
 
         HidePopup();
     }
 
     private void ShowPopup()
     {
+        _progressBar.fillAmount = 0;
         _viewport.SetActive(true);
+
+        _popupSequence = DOTween.Sequence();
+        _popupSequence.Append(_progressBar.DOFillAmount(1, _chanceTimerDuration));
+        _popupSequence.AppendCallback(() => Decline());
+
+        _continurTextPolsing = _continueText.transform.DOScale(1.1f, 0.3f).SetLoops(-1, LoopType.Yoyo);
     }
 
     private void HidePopup()
@@ -52,27 +57,16 @@ public class SecondChanceView : MonoBehaviour
 
     private void Contirm()
     {
-        if (_adService.RewardReadyCheck())
-        {
-            _adService.ShowRewardedAd();
-            HidePopup();
-        }
-        else
-        {
-            if(_fadeOut != null && _fadeOut.IsPlaying())
-                _fadeOut.Kill();
-
-            _fadeOut = DOTween.Sequence();
-            _fadeOut.Append(_notReadyText.DOColor(_notReadyColor, 0));
-            _fadeOut.AppendInterval(1.5f);
-            _fadeOut.Append(_notReadyText.DOColor(_notReadyTranspatentColor, 1.5f));
-
-            _fadeOut.Play();
-        }
+        _popupSequence.Kill();
+        _continurTextPolsing.Kill();
+        _adService.ShowRewardedAd();
+        HidePopup();
     }
 
     private void Decline()
     {
+        _popupSequence.Kill();
+        _continurTextPolsing.Kill();
         _gameService.GameOver();
         HidePopup();
     }

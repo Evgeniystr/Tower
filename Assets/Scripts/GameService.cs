@@ -45,17 +45,17 @@ public class GameService : MonoBehaviour
 #endif
     }
 
-    public async UniTaskVoid FirstGameStart()
-    {
-#if (UNITY_EDITOR)
-        StartGame();
-#elif (UNITY_ANDROID)
-        if (!IsAuthenticated)
-            await UniTask.WaitUntil(() => IsAuthenticated);
+//    public async UniTaskVoid FirstGameStart()
+//    {
+//#if (UNITY_EDITOR)
+//        StartGame();
+//#elif (UNITY_ANDROID)
+//        if (!IsAuthenticated)
+//            await UniTask.WaitUntil(() => IsAuthenticated);
 
-        StartGame();
-#endif
-    }
+//        StartGame();
+//#endif
+//    }
 
 
     public void StartGame()

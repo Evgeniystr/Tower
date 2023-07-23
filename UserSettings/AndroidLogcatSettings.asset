@@ -1,60 +1,42 @@
 {
     "m_SelectedDeviceId": "8f1b9bba",
     "m_SelectedPackage": {
-        "deviceId": "8f1b9bba",
-        "name": "com.AtomarFUN.FruitsTower",
-        "processId": 25514,
+        "deviceId": "",
+        "name": "",
+        "processId": 0,
         "exited": false
     },
     "m_SelectedPriority": 0,
     "m_KnownPackagesForSerialization": [
         {
             "deviceId": "8f1b9bba",
-            "name": "com.android.launcher3",
-            "processId": 30783,
-            "exited": false
-        },
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.AtomarFUN.FruitsTower",
-            "processId": 26567,
-            "exited": true
-        },
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.AtomarFUN.FruitsTower",
-            "processId": 10123,
-            "exited": true
-        },
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.AtomarFUN.FruitsTower",
-            "processId": 20704,
-            "exited": true
-        },
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.AtomarFUN.FruitsTower",
-            "processId": 24260,
-            "exited": true
-        },
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.AtomarFUN.FruitsTower",
-            "processId": 15730,
-            "exited": false
-        },
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.AtomarFUN.FruitsTower",
-            "processId": 22753,
-            "exited": false
-        },
-        {
-            "deviceId": "8f1b9bba",
             "name": "com.AtomarFUN.FruitsTower",
             "processId": 25514,
+            "exited": true
+        },
+        {
+            "deviceId": "8f1b9bba",
+            "name": "com.android.launcher3",
+            "processId": 20717,
             "exited": false
+        },
+        {
+            "deviceId": "8f1b9bba",
+            "name": "com.AtomarFUN.FruitsTower",
+            "processId": 1034,
+            "exited": true
+        },
+        {
+            "deviceId": "8f1b9bba",
+            "name": "com.AtomarFUN.FruitsTower",
+            "processId": 6354,
+            "exited": true
+        },
+        {
+            "deviceId": "8f1b9bba",
+            "name": "com.AtomarFUN.FruitsTower",
+            "processId": 17167,
+            "exited": true
         }
     ],
     "m_Tags": {

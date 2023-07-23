@@ -16,7 +16,7 @@ public class HintPanelView : MonoBehaviour
     void Start()
     {
         _button.onClick.AddListener(HideHint);
-        _button.onClick.AddListener(() => _gameService.FirstGameStart());
+        _button.onClick.AddListener(() => _gameService.StartGame());
 
         ShowHint();
     }

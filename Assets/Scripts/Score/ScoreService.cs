@@ -13,6 +13,7 @@ public class ScoreService
     private TowerBuilderService _towerBuilderService;
 
     public long ScoreCounter { private set; get; }
+    public int BestScore { private set; get; }
     public Dictionary<string, string> UserNames { private set; get; }//iserID UserName
     public string PlayerName { private set; get; }
 
@@ -23,8 +24,11 @@ public class ScoreService
         _towerBuilderService = towerBuilderService;
 
         _gameService.OnGameStart += Reset;
+        _gameService.OnGameOver += SaveBestScore;
         _gameService.OnGameOver += PublishScore;
         _towerBuilderService.OnTowerItemPlaced += AddScore;
+
+        BestScore = PlayerPrefs.HasKey(Constants.BestScore) ? PlayerPrefs.GetInt(Constants.BestScore) : 0;
 
         UserNames = new Dictionary<string, string> ();
     }
@@ -44,6 +48,15 @@ public class ScoreService
         OnScoreConterChange?.Invoke(ScoreCounter, false);
     }
 
+    private void SaveBestScore()
+    {
+        if (ScoreCounter > BestScore)
+        {
+            BestScore = (int)ScoreCounter;
+            PlayerPrefs.SetInt(Constants.BestScore, BestScore);
+        }
+    }
+
     private void PublishScore()
     {
         Debug.Log($"[ScoreService] GPGS Authenticate status: {_gameService.IsAuthenticated}");
@@ -52,10 +65,10 @@ public class ScoreService
         {
             PlayGamesPlatform.Instance.ReportScore(ScoreCounter, Constants.TowerHeightLeaderboardID, (isSucces) => 
             {
-                if (isSucces)
-                    GetLeaderbordData();
-                else
-                    throw new Exception($"[ScoreService] GPGS ReportScore: {isSucces}");
+                //if (isSucces)
+                //    GetLeaderbordData();
+                //else
+                //    throw new Exception($"[ScoreService] GPGS ReportScore: {isSucces}");
             });
         }
         else

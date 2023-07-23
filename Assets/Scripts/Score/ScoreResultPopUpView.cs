@@ -6,6 +6,7 @@ using DG.Tweening;
 using GooglePlayGames.BasicApi;
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 
 public class ScoreResultPopUpView : MonoBehaviour
 {
@@ -23,9 +24,23 @@ public class ScoreResultPopUpView : MonoBehaviour
     [SerializeField]
     private TMP_Text _lastScore;
     [SerializeField]
+    private TMP_Text _bestScore;
+    [SerializeField]
+    private TMP_Text _waitText;
+    [SerializeField]
     private Button _restartButton;
     [SerializeField]
+    private Button _showLeaderboardButton;
+    [SerializeField]
+    private Button _hideLeaderboardButton;
+    [SerializeField]
     private GameObject _privateRecordGO;
+    [SerializeField]
+    private GameObject _resultPanelGO;
+    [SerializeField]
+    private GameObject _laederboardPanelGO;
+    [SerializeField]
+    private GameObject _waitPanelGO;
 
     [SerializeField]
     private Transform _leaderbordListRoot;
@@ -34,6 +49,11 @@ public class ScoreResultPopUpView : MonoBehaviour
 
     private LeadenboardEntriesPool _leadenboardEntriesPool;
     private List<LeaderboardEntryView> _spawnedScoreItems;
+
+    private const string _waitTextValue = "wait";
+    private const int _maxDotsCounter = 3;
+    private Tween _waitTextAnim;
+    private bool _isScoresRecived;
 
     private void Start()
     {
@@ -44,6 +64,8 @@ public class ScoreResultPopUpView : MonoBehaviour
         _scoreService.OnLeaderboardDataRecive += ShowSocialScores;
 
         _restartButton.onClick.AddListener(Restart);
+        _showLeaderboardButton.onClick.AddListener(ShowLeaderboardPanel);
+        _hideLeaderboardButton.onClick.AddListener(HideLeaderboardPanel);
 
         _viewport.SetActive(false);
         StartupLeaderbordCleanup();
@@ -65,6 +87,10 @@ public class ScoreResultPopUpView : MonoBehaviour
     public void ShowPopup()
     {
         _lastScore.text = $"Score {_scoreService.ScoreCounter}";
+        _bestScore.text = $"best {_scoreService.BestScore}";
+
+        _privateRecordGO.SetActive(_scoreService.ScoreCounter == _scoreService.BestScore);
+        _showLeaderboardButton.gameObject.SetActive(_gameService.IsAuthenticated);
 
         var seq = DOTween.Sequence();
         seq.AppendInterval(1);//add some time for builded tower lookup
@@ -76,6 +102,38 @@ public class ScoreResultPopUpView : MonoBehaviour
             () => _viewportCanvasGroup.alpha, 
             (value) => _viewportCanvasGroup.alpha = value, 
             1, 0.6f).SetEase(Ease.OutExpo));
+
+        HideLeaderboardPanel();
+    }
+
+    private async void ShowLeaderboardPanel()
+    {
+        _scoreService.GetLeaderbordData();
+
+        _resultPanelGO.SetActive(false);
+        _laederboardPanelGO.SetActive(_isScoresRecived);
+        _waitPanelGO.SetActive(!_isScoresRecived);
+
+        var dotsCounter = 0;
+        while (!_isScoresRecived)
+        {
+            await UniTask.Delay(300);
+
+            if (dotsCounter <= _maxDotsCounter)
+            {
+                _waitText.text = _waitText.text + ".";
+            }
+            else
+            {
+                dotsCounter = 0;
+                _waitText.text = _waitTextValue;
+            }
+        }
+    }
+    private void HideLeaderboardPanel()
+    {
+        _resultPanelGO.SetActive(true);
+        _laederboardPanelGO.SetActive(false);
     }
 
     public void ShowSocialScores(LeaderboardScoreData leaderboardData)
@@ -83,7 +141,10 @@ public class ScoreResultPopUpView : MonoBehaviour
         if (!leaderboardData.Valid)
             throw new Exception($"[ScoreResultPopUpView] Leaderboard recived status: {leaderboardData.Status}");
 
-        _privateRecordGO.SetActive(_scoreService.ScoreCounter == leaderboardData.PlayerScore.value);
+        _isScoresRecived = true;
+        _laederboardPanelGO.SetActive(true);
+        _waitPanelGO.SetActive(false);
+
         foreach (var scoreItem in leaderboardData.Scores)
         {
             var itemView = _leadenboardEntriesPool.Get();
@@ -96,6 +157,8 @@ public class ScoreResultPopUpView : MonoBehaviour
 
     public void Restart()
     {
+        _isScoresRecived = false;
+
         _cameraService.NewGameCameraMove();
         _gameService.StartGame();
         _viewport.SetActive(false);

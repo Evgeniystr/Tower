@@ -33,7 +33,7 @@ public class TowerBuilderService
     //continue after falling
     //private const float _minTowerSizeForSecondChance = 0.5f;
     private const int _minTowerHeight = 5;
-    public const int AdPerTowerLevel = 3;
+    public const int AdPerTowerLevel = 15;
     public int UsedAdCounter { get; private set; }
 
 
@@ -276,6 +276,9 @@ public class TowerBuilderService
 
     private bool CanTakeSecondChanceCheck()
     {
+        if(!_adService.RewardReadyCheck())
+            return false;
+
         var towerLevel = _allTowerElements.Count - 1; //substract base level
         var chansesForCurrentLevel = towerLevel / AdPerTowerLevel;
         var isCanTakeChance =

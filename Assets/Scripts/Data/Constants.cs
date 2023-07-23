@@ -12,4 +12,6 @@ public class Constants
 
     public const string VolumePrefsKey = "Volume";
     public const string IsMutePrefsKey = "Mute";
+
+    public const string BestScore = "BestScore";
 }
