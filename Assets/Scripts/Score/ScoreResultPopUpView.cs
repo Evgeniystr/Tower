@@ -51,8 +51,7 @@ public class ScoreResultPopUpView : MonoBehaviour
     private List<LeaderboardEntryView> _spawnedScoreItems;
 
     private const string _waitTextValue = "wait";
-    private const int _maxDotsCounter = 3;
-    private Tween _waitTextAnim;
+    private const int _maxDotsCounter = 5;
     private bool _isScoresRecived;
 
     private void Start()
@@ -108,7 +107,7 @@ public class ScoreResultPopUpView : MonoBehaviour
 
     private async void ShowLeaderboardPanel()
     {
-        _scoreService.GetLeaderbordData();
+        _scoreService.RequestLeaderbordData(10, LeaderboardTimeSpan.AllTime);
 
         _resultPanelGO.SetActive(false);
         _laederboardPanelGO.SetActive(_isScoresRecived);
@@ -122,6 +121,7 @@ public class ScoreResultPopUpView : MonoBehaviour
             if (dotsCounter <= _maxDotsCounter)
             {
                 _waitText.text = _waitText.text + ".";
+                dotsCounter++;
             }
             else
             {

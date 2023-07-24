@@ -29,11 +29,30 @@ public class ScoreService
         _towerBuilderService.OnTowerItemPlaced += AddScore;
 
         BestScore = PlayerPrefs.HasKey(Constants.BestScore) ? PlayerPrefs.GetInt(Constants.BestScore) : 0;
+        SyncPlayerScores();
 
         UserNames = new Dictionary<string, string> ();
     }
 
+    public void SyncPlayerScores()
+    {
+        if (!_gameService.IsAuthenticated)
+            return;
 
+
+        PlayGamesPlatform.Instance.LoadScores(
+            Constants.TowerHeightLeaderboardID,
+            LeaderboardStart.PlayerCentered,
+            1,
+            LeaderboardCollection.Public,
+            LeaderboardTimeSpan.AllTime,
+            (data) =>
+            {
+                if(BestScore > data.PlayerScore.value)
+                    PlayGamesPlatform.Instance.ReportScore(ScoreCounter, Constants.TowerHeightLeaderboardID, (isSucces) => {});
+            },
+            true);
+    }
     private void AddScore(bool isPerfect)
     {
         ScoreCounter++;
@@ -80,14 +99,14 @@ public class ScoreService
         }
     }
 
-    public void GetLeaderbordData()
+    public void RequestLeaderbordData(int quantity, LeaderboardTimeSpan timespan)
     {
         PlayGamesPlatform.Instance.LoadScores(
             Constants.TowerHeightLeaderboardID,
             LeaderboardStart.PlayerCentered,
-            10,
+            quantity,
             LeaderboardCollection.Public,
-            LeaderboardTimeSpan.AllTime,
+            timespan,
             (data) =>
             {
                 if (string.IsNullOrEmpty(PlayerName))

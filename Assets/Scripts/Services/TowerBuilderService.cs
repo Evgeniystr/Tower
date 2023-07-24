@@ -30,10 +30,9 @@ public class TowerBuilderService
 
     private int _perfectMoveCounter;
 
-    //continue after falling
-    //private const float _minTowerSizeForSecondChance = 0.5f;
-    private const int _minTowerHeight = 5;
-    public const int AdPerTowerLevel = 15;
+    private const int _minTowerHeightIncrementor = 5;
+    public const int AdPerTowerLevel = 20;
+    private int _minTowerHeightForAd;
     public int UsedAdCounter { get; private set; }
 
 
@@ -84,6 +83,7 @@ public class TowerBuilderService
 
         UsedAdCounter = 0;
         _perfectMoveCounter = 0;
+        _minTowerHeightForAd = _minTowerHeightIncrementor;
 
         _playerInputService.OnTapEvent += StartMakeNewFruit;
         _playerInputService.OnReleaseEvent += StopMakeNewFruit;
@@ -256,6 +256,8 @@ public class TowerBuilderService
     public void TakeSecondChance()
     {
         UsedAdCounter++;
+        _minTowerHeightForAd = _allTowerElements.Count + _minTowerHeightIncrementor;
+        DoPerfectMoveWave();
         _playerInputService.SetInputActive(true);
     }
 
@@ -280,10 +282,10 @@ public class TowerBuilderService
             return false;
 
         var towerLevel = _allTowerElements.Count - 1; //substract base level
-        var chansesForCurrentLevel = towerLevel / AdPerTowerLevel;
+        var chansesForCurrentLevel = towerLevel / AdPerTowerLevel + 1;
         var isCanTakeChance =
             UsedAdCounter < chansesForCurrentLevel && //is has unused chances
-            towerLevel >= _minTowerHeight; //is tower meet minimal height
+            towerLevel >= _minTowerHeightForAd; //is tower meet minimal height
 
         return isCanTakeChance;
     }

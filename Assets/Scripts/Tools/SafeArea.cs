@@ -24,6 +24,9 @@ public class SafeArea : MonoBehaviour
 
     private void UpdateSafeArea()
     {
+        if (Screen.width == 0 || Screen.height == 0)
+            return;
+
         Vector2 anchorMin = _safeArea.position;
         Vector2 anchorMax = _safeArea.position + _safeArea.size;
 
