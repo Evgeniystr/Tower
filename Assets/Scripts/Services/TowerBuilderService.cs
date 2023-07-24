@@ -31,7 +31,7 @@ public class TowerBuilderService
     private int _perfectMoveCounter;
 
     private const int _minTowerHeightIncrementor = 5;
-    public const int AdPerTowerLevel = 20;
+    public const int AdPerTowerLevel = 30;
     private int _minTowerHeightForAd;
     public int UsedAdCounter { get; private set; }
 
