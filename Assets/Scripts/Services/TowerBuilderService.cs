@@ -29,6 +29,8 @@ public class TowerBuilderService
     private FruitsPool _fruitsPool;
 
     private int _perfectMoveCounter;
+    private int _totalPerfectMoveCounter;
+    private int _bestPerfectStreak;
 
     private const int _minTowerHeightIncrementor = 5;
     public const int AdPerTowerLevel = 30;
@@ -83,6 +85,8 @@ public class TowerBuilderService
 
         UsedAdCounter = 0;
         _perfectMoveCounter = 0;
+        _totalPerfectMoveCounter = 0;
+        _bestPerfectStreak = 0;
         _minTowerHeightForAd = _minTowerHeightIncrementor;
 
         _playerInputService.OnTapEvent += StartMakeNewFruit;
@@ -123,6 +127,9 @@ public class TowerBuilderService
 
     private void OnGameEnd()
     {
+        AnaliticsTool.LogGameResult(_allTowerElements.Count, UsedAdCounter);
+        AnaliticsTool.LogPerfectMovesStatistic(_totalPerfectMoveCounter, _allTowerElements.Count, _bestPerfectStreak);
+
         _playerInputService.OnTapEvent -= StartMakeNewFruit;
         _playerInputService.OnReleaseEvent -= StopMakeNewFruit;
     }
@@ -183,6 +190,9 @@ public class TowerBuilderService
 
     private void OnNormalMove()
     {
+        if (_perfectMoveCounter > _bestPerfectStreak)
+            _bestPerfectStreak = _perfectMoveCounter;
+
         _perfectMoveCounter = 0;
         _audioService.DoSplatterSound();
     }
@@ -190,6 +200,7 @@ public class TowerBuilderService
     private void OnPerfectMove()
     {
         _perfectMoveCounter++;
+        _totalPerfectMoveCounter++;
 
         _splashService.DoSplash();
 
@@ -248,9 +259,13 @@ public class TowerBuilderService
 
 
         if (CanTakeSecondChanceCheck())
+        {
             OnSecondChancePropoposal?.Invoke();
+        }
         else
+        {
             _gameService.GameOver();
+        }
     }
 
     public void TakeSecondChance()

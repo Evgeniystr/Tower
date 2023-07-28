@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+assets/firebase/plugins/x86_64/firebasecppapp-11_3_0.bundle filter=lfs diff=lfs merge=lfs -text
+assets/firebase/plugins/x86_64/firebasecppapp-11_3_0.dll filter=lfs diff=lfs merge=lfs -text
+assets/firebase/plugins/x86_64/firebasecppapp-11_3_0.so filter=lfs diff=lfs merge=lfs -text
+assets/firebase/m2repository/com/google/firebase/firebase-app-unity/11.3.0/firebase-app-unity-11.3.0.srcaar filter=lfs diff=lfs merge=lfs -text
+assets/firebase/editor/network_request.exe filter=lfs diff=lfs merge=lfs -text

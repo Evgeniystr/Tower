@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>118804524673-1icjs2t9sbnu8jmto4db0vvl7uqqutft.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.118804524673-1icjs2t9sbnu8jmto4db0vvl7uqqutft</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>118804524673-7643ci2ogsv7d7nre5ffnmp0l3adinms.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCfdISv9jOJZKSaYOhwF4MoNwbsqHFVsAs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>118804524673</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.AtomarFUN.FruitsTower</string>
+	<key>PROJECT_ID</key>
+	<string>fruit-tower-64787959</string>
+	<key>STORAGE_BUCKET</key>
+	<string>fruit-tower-64787959.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:118804524673:ios:e49897fbf356de0c796780</string>
+</dict>
+</plist>

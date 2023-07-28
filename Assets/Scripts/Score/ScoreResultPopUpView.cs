@@ -107,6 +107,8 @@ public class ScoreResultPopUpView : MonoBehaviour
 
     private async void ShowLeaderboardPanel()
     {
+        AnaliticsTool.LogLeaderboardOpen();
+
         _scoreService.RequestLeaderbordData(10, LeaderboardTimeSpan.AllTime);
 
         _resultPanelGO.SetActive(false);

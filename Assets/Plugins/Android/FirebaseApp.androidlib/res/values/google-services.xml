@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id">
+  <string name="gcm_defaultSenderId" translatable="false">118804524673</string>
+  <string name="google_storage_bucket" translatable="false">fruit-tower-64787959.appspot.com</string>
+  <string name="project_id" translatable="false">fruit-tower-64787959</string>
+  <string name="google_api_key" translatable="false">AIzaSyB02-BiJuNzQfC58b5RVEZqpU7qjuN_WHk</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyB02-BiJuNzQfC58b5RVEZqpU7qjuN_WHk</string>
+  <string name="google_app_id" translatable="false">1:118804524673:android:cc27b89831c14ed5796780</string>
+  <string name="default_web_client_id" translatable="false">118804524673-jpf623uol9i5ig3qne4trf9t6i0cd411.apps.googleusercontent.com</string>
+</resources>

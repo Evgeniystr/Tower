@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "118804524673",
+    "project_id": "fruit-tower-64787959",
+    "storage_bucket": "fruit-tower-64787959.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:118804524673:android:cc27b89831c14ed5796780",
+        "android_client_info": {
+          "package_name": "com.AtomarFUN.FruitsTower"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "118804524673-jpf623uol9i5ig3qne4trf9t6i0cd411.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB02-BiJuNzQfC58b5RVEZqpU7qjuN_WHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "118804524673-jpf623uol9i5ig3qne4trf9t6i0cd411.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "118804524673-1icjs2t9sbnu8jmto4db0vvl7uqqutft.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.AtomarFUN.FruitsTower"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

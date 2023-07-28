@@ -28,7 +28,7 @@ public class GameService : MonoBehaviour
 
 #if (UNITY_EDITOR)
 #elif (UNITY_ANDROID)
-        //GPGS
+        //GPG
         //PlayGamesPlatform.DebugLogEnabled = true;//
 
         PlayGamesPlatform.Activate();
@@ -38,24 +38,14 @@ public class GameService : MonoBehaviour
 
             if (status == SignInStatus.Success)
                 IsAuthenticated = true;
+
+            AnaliticsTool.LogGPGSAuthenticateStatus(status.ToString());
         });
 
 #else
         throw new Exception("[GameService] Unexpected platform");
 #endif
     }
-
-//    public async UniTaskVoid FirstGameStart()
-//    {
-//#if (UNITY_EDITOR)
-//        StartGame();
-//#elif (UNITY_ANDROID)
-//        if (!IsAuthenticated)
-//            await UniTask.WaitUntil(() => IsAuthenticated);
-
-//        StartGame();
-//#endif
-//    }
 
 
     public void StartGame()
