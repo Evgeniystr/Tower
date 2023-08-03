@@ -1,31 +1,13 @@
 {
     "m_SelectedDeviceId": "8f1b9bba",
     "m_SelectedPackage": {
-        "deviceId": "8f1b9bba",
-        "name": "com.AtomarFUN.FruitsTower",
-        "processId": 14504,
+        "deviceId": "",
+        "name": "",
+        "processId": 0,
         "exited": false
     },
     "m_SelectedPriority": 0,
     "m_KnownPackagesForSerialization": [
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.android.launcher3",
-            "processId": 20717,
-            "exited": false
-        },
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.AtomarFUN.FruitsTower",
-            "processId": 1034,
-            "exited": true
-        },
-        {
-            "deviceId": "8f1b9bba",
-            "name": "com.AtomarFUN.FruitsTower",
-            "processId": 6354,
-            "exited": true
-        },
         {
             "deviceId": "8f1b9bba",
             "name": "com.AtomarFUN.FruitsTower",
@@ -42,12 +24,18 @@
             "deviceId": "8f1b9bba",
             "name": "com.AtomarFUN.FruitsTower",
             "processId": 10875,
-            "exited": false
+            "exited": true
         },
         {
             "deviceId": "8f1b9bba",
             "name": "com.AtomarFUN.FruitsTower",
             "processId": 14504,
+            "exited": true
+        },
+        {
+            "deviceId": "8f1b9bba",
+            "name": "com.android.launcher3",
+            "processId": 2796,
             "exited": false
         }
     ],

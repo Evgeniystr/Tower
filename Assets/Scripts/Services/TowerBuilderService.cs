@@ -25,6 +25,7 @@ public class TowerBuilderService
 
     private bool _isInitialized;
     private bool _fruitGrowthInProgress;
+    private bool _adRewadrRecived;
 
     private FruitsPool _fruitsPool;
 
@@ -74,6 +75,7 @@ public class TowerBuilderService
         _gameService.OnGameStart += OnGameStart;
         _gameService.OnGameOver += OnGameEnd;
         _adService.OnRewardRecived += (type, amount) => TakeSecondChance();
+        _adService.OnAdClosed += OnAdClosed;
 
         _isInitialized = true;
     }
@@ -268,12 +270,22 @@ public class TowerBuilderService
         }
     }
 
-    public void TakeSecondChance()
+    //ad succes
+    private void TakeSecondChance()
     {
+        _adRewadrRecived = true;
         UsedAdCounter++;
         _minTowerHeightForAd = _allTowerElements.Count + _minTowerHeightIncrementor;
         DoPerfectMoveWave();
         _playerInputService.SetInputActive(true);
+    }
+
+    private void OnAdClosed()
+    {
+        if(!_adRewadrRecived)
+            _gameService.GameOver();
+
+        _adRewadrRecived = false;
     }
 
     private async UniTask DestroyLoseElement()

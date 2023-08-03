@@ -1,16 +1,20 @@
 using GoogleMobileAds.Api;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ADSService : MonoBehaviour
 {
     public event Action<string, double> OnRewardRecived;//type amount
+    public event Action OnAdClosed;
 
     void Start()
     {
         // Initialize the Google Mobile Ads SDK.
         MobileAds.Initialize((InitializationStatus initStatus) =>
         {
+            ReportMediationNetworksInitializationStatus(initStatus);
+
             // This callback is called once the MobileAds SDK is initialized.
             LoadRewardedAd();
         });
@@ -27,6 +31,27 @@ public class ADSService : MonoBehaviour
 #endif
 
     private RewardedAd rewardedAd;
+
+    private void ReportMediationNetworksInitializationStatus(InitializationStatus initStatus)
+    {
+        Dictionary<string, AdapterStatus> map = initStatus.getAdapterStatusMap();
+        foreach (KeyValuePair<string, AdapterStatus> keyValuePair in map)
+        {
+            string className = keyValuePair.Key;
+            AdapterStatus status = keyValuePair.Value;
+            switch (status.InitializationState)
+            {
+                case AdapterState.NotReady:
+                    // The adapter initialization did not complete.
+                    Debug.LogWarning("Adapter: " + className + " not ready.");
+                    break;
+                case AdapterState.Ready:
+                    // The adapter was successfully initialized.
+                    Debug.Log("Adapter: " + className + " is initialized.");
+                    break;
+            }
+        }
+    }
 
     /// <summary>
     /// Loads the rewarded ad.
