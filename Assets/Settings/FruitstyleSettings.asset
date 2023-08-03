@@ -23,3 +23,5 @@ MonoBehaviour:
   LastItemFinalScaleModifier: 0.25
   OtherItemMaxWaveScaleModifier: 0.3
   OtherItemFinalScaleModifier: 0.15
+  BouncePower: 1.15
+  BounceDuration: 0.2

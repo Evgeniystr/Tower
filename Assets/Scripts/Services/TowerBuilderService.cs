@@ -197,6 +197,7 @@ public class TowerBuilderService
 
         _perfectMoveCounter = 0;
         _audioService.DoSplatterSound();
+        _currentTowerElement.DoSimpleBounce();
     }
 
     private void OnPerfectMove()
@@ -210,6 +211,8 @@ public class TowerBuilderService
 
         if(_perfectMoveCounter > _gameSettings.PerfectMoveStreakRequired)
             DoPerfectMoveWave();
+        else 
+            _currentTowerElement.DoSimpleBounce();
     }
 
     private bool PerfectMoveCheck()
@@ -243,7 +246,7 @@ public class TowerBuilderService
             var waveStartDelay = ((elementsLastIndex - i) * _gameSettings.VaweDelayStep);
             var isTopItem = i == elementsLastIndex;
 
-            towerElement.DoWave(waveStartDelay, isTopItem, powerValue);
+            towerElement.DoPerfectWave(waveStartDelay, isTopItem, powerValue);
             powerValue -= powerScaleStep;
         }
     }
@@ -273,6 +276,8 @@ public class TowerBuilderService
     //ad succes
     private void TakeSecondChance()
     {
+        Debug.LogError("TakeSecondChance");//
+
         _adRewadrRecived = true;
         UsedAdCounter++;
         _minTowerHeightForAd = _allTowerElements.Count + _minTowerHeightIncrementor;
@@ -282,6 +287,7 @@ public class TowerBuilderService
 
     private void OnAdClosed()
     {
+        Debug.LogError("OnAdClosed. _adRewadrRecived " + _adRewadrRecived);//
         if(!_adRewadrRecived)
             _gameService.GameOver();
 

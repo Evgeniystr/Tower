@@ -16,4 +16,8 @@ public class GameSettings : ScriptableObject
     public float LastItemFinalScaleModifier;
     public float OtherItemMaxWaveScaleModifier;
     public float OtherItemFinalScaleModifier;
+
+    [Header("Wave settings")]
+    public float BouncePower;
+    public float BounceDuration;
 }

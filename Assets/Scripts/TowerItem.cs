@@ -116,7 +116,7 @@ public class TowerItem : MonoBehaviour
         _isGrowing = false;
     }
 
-    public void DoWave(float startDelay, bool isTopItem, float powerScale)
+    public void DoPerfectWave(float startDelay, bool isTopItem, float powerScale)
     {
         var maxWaveScaleModifier = isTopItem ?
             _gameSettings.LastItemMaxWaveScaleModifier :
@@ -146,6 +146,25 @@ public class TowerItem : MonoBehaviour
         seq.AppendInterval(startDelay);
         seq.Append(_transform.DOScale(waveMaxScale, _gameSettings.VaweScaleDuration));
         seq.Append(_transform.DOScale(finalScale, _gameSettings.VaweScaleDuration));
+
+        seq.Play();
+    }
+
+    public void DoSimpleBounce()
+    {
+        var buunceMaxSize = new Vector3(
+            Size * _gameSettings.BouncePower,
+            _dafaultYscale, 
+            Size * _gameSettings.BouncePower);
+        var buunceFinalSize = new Vector3(
+            Size,
+            _dafaultYscale,
+            Size);
+
+        var seq = DOTween.Sequence();
+
+        seq.Append(_transform.DOScale(buunceMaxSize, _gameSettings.BounceDuration/2));
+        seq.Append(_transform.DOScale(buunceFinalSize, _gameSettings.BounceDuration/2));
 
         seq.Play();
     }
