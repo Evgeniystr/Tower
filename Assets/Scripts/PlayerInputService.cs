@@ -9,6 +9,8 @@ public class PlayerInputService : MonoBehaviour
     public event Action OnTapEvent;
     public event Action OnReleaseEvent;
 
+    public event Action OnUnrestrictedTapEvent;
+
     public bool IsInputActive { get; private set; }
 
     [SerializeField]
@@ -37,6 +39,9 @@ public class PlayerInputService : MonoBehaviour
             if(Input.GetMouseButtonUp(0) && CheckUIBlockers())
                 OnReleaseEvent?.Invoke();
         }
+
+        if (Input.GetMouseButtonUp(0))
+            OnUnrestrictedTapEvent?.Invoke();
     }
 
     private bool CheckUIBlockers()

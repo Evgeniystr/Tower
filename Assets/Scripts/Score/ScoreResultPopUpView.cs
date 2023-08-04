@@ -7,6 +7,8 @@ using GooglePlayGames.BasicApi;
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using System.Threading;
+using Newtonsoft.Json.Linq;
 
 public class ScoreResultPopUpView : MonoBehaviour
 {
@@ -16,6 +18,8 @@ public class ScoreResultPopUpView : MonoBehaviour
     private CameraService _cameraService;
     [Inject]
     private GameService _gameService;
+    [Inject]
+    private PlayerInputService _playerInputService;
 
     [SerializeField]
     private GameObject _viewport;
@@ -54,12 +58,15 @@ public class ScoreResultPopUpView : MonoBehaviour
     private const int _maxDotsCounter = 5;
     private bool _isScoresRecived;
 
+    private CancellationTokenSource _anticipationTokenSource;
+
+
     private void Start()
     {
         _leadenboardEntriesPool = new LeadenboardEntriesPool(_leadenboardEntriePrefab, _leaderbordListRoot);
         _spawnedScoreItems = new List<LeaderboardEntryView>();
 
-        _cameraService.OnLoseCamStop += ShowPopup;
+        _cameraService.OnLoseCamStop += StartShowPopup;
         _scoreService.OnLeaderboardDataRecive += ShowSocialScores;
 
         _restartButton.onClick.AddListener(Restart);
@@ -70,9 +77,10 @@ public class ScoreResultPopUpView : MonoBehaviour
         StartupLeaderbordCleanup();
     }
 
+
     private void OnDestroy()
     {
-        _cameraService.OnLoseCamStop -= ShowPopup;
+        _cameraService.OnLoseCamStop -= StartShowPopup;
         _scoreService.OnLeaderboardDataRecive -= ShowSocialScores;
         _restartButton.onClick.RemoveListener(Restart);
     }
@@ -83,7 +91,46 @@ public class ScoreResultPopUpView : MonoBehaviour
             Destroy(_leaderbordListRoot.GetChild(i).gameObject);
     }
 
-    public void ShowPopup()
+    private async void StartShowPopup()
+    {
+        await PopupAnticipation();
+        ShowPopup();
+    }
+
+
+    private async UniTask PopupAnticipation()
+    {
+        _playerInputService.OnUnrestrictedTapEvent += BreakAnticipation;
+
+        _anticipationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            await UniTask.Delay(1000, false, PlayerLoopTiming.Update, _anticipationTokenSource.Token);
+        }
+        catch (OperationCanceledException) when (_anticipationTokenSource.IsCancellationRequested)
+        {
+            //operation was manualy canceled
+            _playerInputService.OnUnrestrictedTapEvent -= BreakAnticipation;
+            return;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex.Message);
+        }
+
+        _playerInputService.OnUnrestrictedTapEvent -= BreakAnticipation;
+    }
+
+    private void BreakAnticipation()
+    {
+        if (_anticipationTokenSource.IsCancellationRequested)
+            return;
+
+        _anticipationTokenSource.Cancel();
+    }
+
+    private void ShowPopup()
     {
         _lastScore.text = $"Score {_scoreService.ScoreCounter}";
         _bestScore.text = $"best {_scoreService.BestScore}";
@@ -92,7 +139,7 @@ public class ScoreResultPopUpView : MonoBehaviour
         _showLeaderboardButton.gameObject.SetActive(_gameService.IsAuthenticated);
 
         var seq = DOTween.Sequence();
-        seq.AppendInterval(1);//add some time for builded tower lookup
+        //seq.AppendInterval(1);//add some time for builded tower lookup
         seq.AppendCallback(() => {
             _viewportCanvasGroup.alpha = 0;
             _viewport.SetActive(true);
